@@ -3,3 +3,20 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.h4Label {
+  margin-left: 10px;
+}
+
+.categories {
+  margin-bottom: 20px;
+}
+
+.searchModes {
+    margin-left: 10px;
+    margin-bottom: 20px;
+}
+
+.comments {
+  margin-top: 20px;
+}
