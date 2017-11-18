@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
-import {Panel, Grid, Row, Col, Badge, Button, ButtonGroup, Glyphicon} from 'react-bootstrap'
+import {Panel, Grid, Row, Col, ButtonToolbar} from 'react-bootstrap'
 import * as Formatter from '../utils/Formatter'
+import VoteScore from './VoteScore'
+
+import EditDeleteButtonGroup from './EditDeleteButtonGroup'
 
 class Comment extends Component {
 
@@ -11,14 +14,13 @@ class Comment extends Component {
         <Grid>
           <Row>
             <Col>
-              <ButtonGroup bsSize='xsmall'>
-                <Button><Glyphicon glyph='pencil' /></Button>
-                <Button><Glyphicon glyph='trash' /></Button>
-              </ButtonGroup>
-            </Col>
+              <ButtonToolbar>
+                <EditDeleteButtonGroup entity='Comment' bsSize='xsmall'/>
+              </ButtonToolbar>
+              </Col>
           </Row>
           <Row><h5>{comment.body}</h5></Row>
-          <Row>Votescore: <Badge>{comment.voteScore}</Badge></Row>
+          <VoteScore voteScore={comment.voteScore}/>
         </Grid>
       </Panel>
       )
