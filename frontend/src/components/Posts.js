@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {NavItem, Nav, ToggleButtonGroup, ToggleButton , ButtonToolbar} from 'react-bootstrap'
+import {NavItem, Nav, Button, ToggleButtonGroup, Glyphicon, ToggleButton , ButtonToolbar} from 'react-bootstrap'
 import Post from './Post'
 
 import SortMode from '../utils/SortMode'
@@ -36,6 +36,7 @@ class Posts extends Component {
 
     return (
       <div>
+        <Button bsStyle='primary' className='createPost'><Glyphicon glyph='plus' />&nbsp;&nbsp;Create Post</Button>
         <h4 className='h4Label'>Show only Posts for Category:</h4>
         <Nav bsStyle='pills' className='categories' activeKey={selectedCategory} onSelect={onSelectedCategoryChanged}>
           {categories.map((category) => (
@@ -49,6 +50,7 @@ class Posts extends Component {
 
           </ToggleButtonGroup>
         </ButtonToolbar>
+
 
         {this.sortPosts(posts).map((post) => (<Post key={post.id} post={post}/>))}
       </div>

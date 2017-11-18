@@ -20,3 +20,8 @@ body {
 .comments {
   margin-top: 20px;
 }
+
+.createPost {
+  margin-left: 10px;
+  margin-bottom: 20px;
+}
