@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import {Panel, PageHeader} from 'react-bootstrap'
 import Posts from './Posts'
 import * as API from '../utils/Api'
+import { Route, Switch } from 'react-router-dom';
 
 class App extends Component {
 
@@ -18,29 +18,22 @@ class App extends Component {
       .then((posts) => this.setState({posts: posts}))
   }
 
-  onSelectedCategoryChanged = (category) => {
-    let newCategory = ''
-    if (category !== this.state.selectedCategory) {
-      newCategory = category
-    }
-    this.setState({selectedCategory: newCategory})
-  }
-
   render() {
+    const categories = [{name: '', path:'/'}, {name: '', path: '/categories'}].concat(this.state.categories)
     return (
       <div>
-        <Panel>
-          <PageHeader>Readable <small>A React Nanodegree Project</small></PageHeader>
-          <Posts
-            onSelectedCategoryChanged={this.onSelectedCategoryChanged}
-            categories={this.state.categories}
-            selectedCategory={this.state.selectedCategory}
-            posts={this.state.posts.filter((post) => (this.state.selectedCategory ? (post.category === this.state.selectedCategory) : true))}
-          />
-
-          </Panel>
-      </div>
-    )
+        <Switch>
+          {categories.map((category) => (
+            <Route key={category.path} exact path={category.name ? `/categories/${category.path}` : category.path} render={() => (
+              <Posts
+              categories={categories}
+              selectedCategory={category}
+              posts={this.state.posts.filter((post) => (category.name ? (post.category === category.name) : true))}
+            />)}
+            />))}
+            </Switch>
+            </div>
+          )
   }
 }
 

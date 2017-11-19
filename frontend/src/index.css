@@ -1,20 +1,23 @@
 body {
   margin: 0;
+  margin-left: 10px;
   padding: 0;
   font-family: sans-serif;
 }
 
-.h4Label {
-  margin-left: 10px;
+.active {
+   text-decoration: underline;
+}
+
+.settings {
+  margin-bottom: 30px;
 }
 
 .categories {
-  margin-bottom: 20px;
+  font-size:120%;
 }
 
 .searchModes {
-    margin-left: 10px;
-    margin-bottom: 20px;
 }
 
 .comments {
@@ -22,6 +25,5 @@ body {
 }
 
 .createPost {
-  margin-left: 10px;
   margin-bottom: 20px;
 }
