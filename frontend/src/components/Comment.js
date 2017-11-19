@@ -2,10 +2,25 @@ import React, { Component } from 'react'
 import {Panel, Grid, Row, Col, ButtonToolbar} from 'react-bootstrap'
 import * as Formatter from '../utils/Formatter'
 import VoteScore from './VoteScore'
+import EditComment from './EditComment'
 
 import EditDeleteButtonGroup from './EditDeleteButtonGroup'
 
 class Comment extends Component {
+
+  state = {showEditDialog: false}
+
+  onEditClick = () => {
+    this.setState({showEditDialog: true})
+  }
+
+  onEditCancel = () => {
+    this.setState({showEditDialog: false})
+  }
+
+  onEditSubmit = () => {
+    this.setState({showEditDialog: false})
+  }
 
   render() {
     const {comment} = this.props
@@ -15,14 +30,23 @@ class Comment extends Component {
           <Row>
             <Col>
               <ButtonToolbar>
-                <EditDeleteButtonGroup entity='Comment' bsSize='xsmall'/>
+                <EditDeleteButtonGroup entity='Comment' bsSize='xsmall' onEditClick={this.onEditClick}/>
               </ButtonToolbar>
-              </Col>
+            </Col>
           </Row>
           <Row><h5>{comment.body}</h5></Row>
           <VoteScore voteScore={comment.voteScore}/>
         </Grid>
+        {this.state.showEditDialog && <EditComment
+          actionName='Edit'
+          entityType='Comment'
+          entity={comment}
+          onCancel={this.onEditCancel}
+          onSubmit={this.onEditSubmit}/>}
       </Panel>
+
+
+
       )
   }
 }

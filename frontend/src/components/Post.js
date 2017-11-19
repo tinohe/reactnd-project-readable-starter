@@ -5,10 +5,13 @@ import * as API from '../utils/Api'
 import Comment from './Comment'
 import VoteScore from './VoteScore'
 import EditDeleteButtonGroup from './EditDeleteButtonGroup'
+import EditComment from './EditComment'
 
 class Post extends Component {
 
-  state = {comments:[]}
+  state = {
+    comments:[],
+    showCreateCommentDialog: false}
 
   fetchCommentsForPost = (postId) => {
     API.fetchCommentForPost(postId)
@@ -26,6 +29,18 @@ class Post extends Component {
     }
   }
 
+  onOpenCreateComment = () => {
+    this.setState({showCreateCommentDialog: true})
+  }
+
+  onCreateCommentCancel = () => {
+    this.setState({showCreateCommentDialog: false})
+  }
+  
+  onCreateCommentSubmit = () => {
+    this.setState({showCreateCommentDialog: false})
+  }
+
   render() {
     const {post} = this.props
 
@@ -38,7 +53,7 @@ class Post extends Component {
                 <EditDeleteButtonGroup entity='Post'/>
                 <ButtonGroup>
                   <OverlayTrigger placement='top' overlay={<Tooltip id='create-comment'>Create Comment</Tooltip>}>
-                    <Button>
+                    <Button onClick={this.onOpenCreateComment}>
                       <Glyphicon glyph='plus' />
                     </Button>
                   </OverlayTrigger>
@@ -54,6 +69,13 @@ class Post extends Component {
         <div className='comments'>
           {this.state.comments.map((comment) => <Comment key={comment.id} comment={comment}/>)}
         </div>
+        {this.state.showCreateCommentDialog && <EditComment
+          actionName='Create'
+          entityType='Comment'
+          entity={{}}
+          onCancel={this.onCreateCommentCancel}
+          onSubmit={this.onCreateCommentSubmit}/>}
+
       </Panel>
       )
   }
