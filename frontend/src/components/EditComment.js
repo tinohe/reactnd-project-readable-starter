@@ -17,11 +17,11 @@ class EditComment extends Component {
   }
 
   render() {
-    const {actionName, entityType, entity, onCancel, onSubmit} = this.props
+    const {actionType, entityType, entity, onCancel, onSubmit} = this.props
     return (
         <Modal.Dialog>
           <Modal.Header>
-            <Modal.Title>{actionName} {entityType}</Modal.Title>
+            <Modal.Title>{actionType.name} {entityType.name}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <FormGroup>

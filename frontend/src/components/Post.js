@@ -6,6 +6,8 @@ import Comment from './Comment'
 import VoteScore from './VoteScore'
 import EditDeleteButtonGroup from './EditDeleteButtonGroup'
 import EditComment from './EditComment'
+import EntityType from '../utils/EntityType'
+import ActionType from '../utils/ActionType'
 
 class Post extends Component {
 
@@ -36,7 +38,7 @@ class Post extends Component {
   onCreateCommentCancel = () => {
     this.setState({showCreateCommentDialog: false})
   }
-  
+
   onCreateCommentSubmit = () => {
     this.setState({showCreateCommentDialog: false})
   }
@@ -50,9 +52,9 @@ class Post extends Component {
           <Row>
             <Col>
               <ButtonToolbar>
-                <EditDeleteButtonGroup entity='Post'/>
+                <EditDeleteButtonGroup entityType={EntityType.Post}/>
                 <ButtonGroup>
-                  <OverlayTrigger placement='top' overlay={<Tooltip id='create-comment'>Create Comment</Tooltip>}>
+                  <OverlayTrigger placement='top' overlay={<Tooltip id='create-comment'>{ActionType.Create.name} {EntityType.Comment.name}</Tooltip>}>
                     <Button onClick={this.onOpenCreateComment}>
                       <Glyphicon glyph='plus' />
                     </Button>
@@ -70,8 +72,8 @@ class Post extends Component {
           {this.state.comments.map((comment) => <Comment key={comment.id} comment={comment}/>)}
         </div>
         {this.state.showCreateCommentDialog && <EditComment
-          actionName='Create'
-          entityType='Comment'
+          actionType={ActionType.Create}
+          entityType={EntityType.Comment}
           entity={{}}
           onCancel={this.onCreateCommentCancel}
           onSubmit={this.onCreateCommentSubmit}/>}

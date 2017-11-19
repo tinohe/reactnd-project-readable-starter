@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import {Panel, Grid, Row, Col, ButtonToolbar} from 'react-bootstrap'
 import * as Formatter from '../utils/Formatter'
+import EntityType from '../utils/EntityType'
+import ActionType from '../utils/ActionType'
 import VoteScore from './VoteScore'
 import EditComment from './EditComment'
 
@@ -30,7 +32,7 @@ class Comment extends Component {
           <Row>
             <Col>
               <ButtonToolbar>
-                <EditDeleteButtonGroup entity='Comment' bsSize='xsmall' onEditClick={this.onEditClick}/>
+                <EditDeleteButtonGroup entityType={EntityType.Comment} bsSize='xsmall' onEditClick={this.onEditClick}/>
               </ButtonToolbar>
             </Col>
           </Row>
@@ -38,8 +40,8 @@ class Comment extends Component {
           <VoteScore voteScore={comment.voteScore}/>
         </Grid>
         {this.state.showEditDialog && <EditComment
-          actionName='Edit'
-          entityType='Comment'
+          actionType={ActionType.Edit}
+          entityType={EntityType.Comment}
           entity={comment}
           onCancel={this.onEditCancel}
           onSubmit={this.onEditSubmit}/>}

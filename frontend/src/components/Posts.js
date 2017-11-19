@@ -3,6 +3,9 @@ import {Link} from 'react-router-dom'
 import {Panel, PageHeader, Button, ToggleButtonGroup, Glyphicon, ToggleButton , ButtonToolbar} from 'react-bootstrap'
 import Post from './Post'
 
+import EntityType from '../utils/EntityType'
+import ActionType from '../utils/ActionType'
+
 import SortMode from '../utils/SortMode'
 
 class Posts extends Component {
@@ -35,7 +38,7 @@ class Posts extends Component {
       <Panel>
         <PageHeader>Readable <small>A React Nanodegree Project</small></PageHeader>
 
-        <Button bsStyle='primary' className='createPost'><Glyphicon glyph='plus' />&nbsp;&nbsp;Create Post</Button>
+        <Button bsStyle='primary' className='createPost'><Glyphicon glyph='plus' />&nbsp;&nbsp;{ActionType.Create.name} {EntityType.Post.name}</Button>
 
         <h4>Show only Posts for Category:</h4>
         <div className='categories settings'>
