@@ -25,3 +25,8 @@ export const fetchCommentForPost = (postId) => {
   return fetch(`${HOST_AND_PORT}/posts/${postId}/comments`, { headers, method: 'GET' })
     .then((response) => response.json())
 }
+
+export const createComment = (commentData) => {
+  return fetch(`${HOST_AND_PORT}/comments`, { headers, method: 'POST',  body: JSON.stringify(commentData)})
+    .then((response) => response.json())
+}
