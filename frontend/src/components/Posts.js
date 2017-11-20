@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
 import {Panel, PageHeader, Button, ToggleButtonGroup, Glyphicon, ToggleButton , ButtonToolbar} from 'react-bootstrap'
 import Post from './Post'
+import EditComment from './EditComment'
 
 import EntityType from '../utils/EntityType'
 import ActionType from '../utils/ActionType'
@@ -11,7 +12,8 @@ import SortMode from '../utils/SortMode'
 class Posts extends Component {
 
   state = {
-    selectedSearchMode: SortMode.voteScore
+    selectedSearchMode: SortMode.voteScore,
+    showCreatePostDialog: false
   }
 
   sortPosts = (posts) => {
@@ -26,6 +28,19 @@ class Posts extends Component {
     this.setState({selectedSearchMode: value})
   }
 
+  onOpenCreatePost = () => {
+    this.setState({showCreatePostDialog: true})
+  }
+
+  onCreatePostCancel = () => {
+    this.setState({showCreatePostDialog: false})
+  }
+
+  onCreatePostSubmit = () => {
+    this.setState({showCreatePostDialog: false})
+  }
+
+
   getClassName = (activeLink, link) => {
     return activeLink === link ? 'active' : ''
   }
@@ -38,7 +53,9 @@ class Posts extends Component {
       <Panel>
         <PageHeader>Readable <small>A React Nanodegree Project</small></PageHeader>
 
-        <Button bsStyle='primary' className='createPost'><Glyphicon glyph='plus' />&nbsp;&nbsp;{ActionType.Create.name} {EntityType.Post.name}</Button>
+        <Button bsStyle='primary' className='createPost' onClick={this.onOpenCreatePost}>
+          <Glyphicon glyph='plus' />&nbsp;&nbsp;{ActionType.Create.name} {EntityType.Post.name}
+        </Button>
 
         <h4>Show only Posts for Category:</h4>
         <div className='categories settings'>
@@ -54,6 +71,13 @@ class Posts extends Component {
 
 
         {this.sortPosts(posts).map((post) => (<Post key={post.id} post={post}/>))}
+
+        {this.state.showCreatePostDialog && <EditComment
+          actionType={ActionType.Create}
+          entityType={EntityType.Post}
+          entity={{}}
+          onCancel={this.onCreatePostCancel}
+          onSubmit={this.onCreatePostSubmit}/>}
       </Panel>
     )
   }

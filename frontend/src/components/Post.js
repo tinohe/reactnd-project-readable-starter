@@ -13,7 +13,9 @@ class Post extends Component {
 
   state = {
     comments:[],
-    showCreateCommentDialog: false}
+    showCreateCommentDialog: false,
+    showEditPostDialog: false
+  }
 
   fetchCommentsForPost = (postId) => {
     API.fetchCommentForPost(postId)
@@ -29,6 +31,18 @@ class Post extends Component {
     if (this.props !== nextProps) {
       this.fetchCommentsForPost(nextProps.post.id)
     }
+  }
+
+  onEditPostClick = () => {
+    this.setState({showEditPostDialog: true})
+  }
+
+  onEditPostCancel = () => {
+    this.setState({showEditPostDialog: false})
+  }
+
+  onEditPostSubmit = () => {
+    this.setState({showEditPostDialog: false})
   }
 
   onOpenCreateComment = () => {
@@ -52,7 +66,7 @@ class Post extends Component {
           <Row>
             <Col>
               <ButtonToolbar>
-                <EditDeleteButtonGroup entityType={EntityType.Post}/>
+                <EditDeleteButtonGroup entityType={EntityType.Post} onEditClick={this.onEditPostClick}/>
                 <ButtonGroup>
                   <OverlayTrigger placement='top' overlay={<Tooltip id='create-comment'>{ActionType.Create.name} {EntityType.Comment.name}</Tooltip>}>
                     <Button onClick={this.onOpenCreateComment}>
@@ -77,6 +91,13 @@ class Post extends Component {
           entity={{}}
           onCancel={this.onCreateCommentCancel}
           onSubmit={this.onCreateCommentSubmit}/>}
+
+        {this.state.showEditPostDialog && <EditComment
+          actionType={ActionType.Edit}
+          entityType={EntityType.Post}
+          entity={post}
+          onCancel={this.onEditPostCancel}
+          onSubmit={this.onEditPostSubmit}/>}
 
       </Panel>
       )
