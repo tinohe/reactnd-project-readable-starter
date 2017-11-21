@@ -19,11 +19,12 @@ class App extends Component {
   }
 
   render() {
-    const categories = [{name: '', path:'/'}, {name: '', path: '/categories'}].concat(this.state.categories)
+    const categories = this.state.categories
+    const categoriesForRouting = [{name: '', path:'/'}, {name: '', path: '/categories'}].concat(categories)
     return (
       <div>
         <Switch>
-          {categories.map((category) => (
+          {categoriesForRouting.map((category) => (
             <Route key={category.path} exact path={category.name ? `/categories/${category.path}` : category.path} render={() => (
               <Posts
               categories={categories}

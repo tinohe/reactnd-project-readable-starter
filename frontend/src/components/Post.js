@@ -58,7 +58,7 @@ class Post extends Component {
   }
 
   render() {
-    const {post} = this.props
+    const {post, categories} = this.props
 
     return (
       <Panel header={Formatter.formatAuthorAndTimestamp('Posted', post.author, post.timestamp)}>
@@ -97,7 +97,8 @@ class Post extends Component {
           entityType={EntityType.Post}
           entity={post}
           onCancel={this.onEditPostCancel}
-          onSubmit={this.onEditPostSubmit}/>}
+          onSubmit={this.onEditPostSubmit}
+          categories={categories}                                />}
 
       </Panel>
       )

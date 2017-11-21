@@ -70,14 +70,15 @@ class Posts extends Component {
         </ButtonToolbar>
 
 
-        {this.sortPosts(posts).map((post) => (<Post key={post.id} post={post}/>))}
+        {this.sortPosts(posts).map((post) => (<Post key={post.id} post={post} categories={categories}/>))}
 
         {this.state.showCreatePostDialog && <EditComment
           actionType={ActionType.Create}
           entityType={EntityType.Post}
           entity={{}}
           onCancel={this.onCreatePostCancel}
-          onSubmit={this.onCreatePostSubmit}/>}
+          onSubmit={this.onCreatePostSubmit}
+          categories={categories}/>}
       </Panel>
     )
   }

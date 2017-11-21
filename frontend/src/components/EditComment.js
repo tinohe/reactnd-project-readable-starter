@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { FormGroup, ControlLabel, FormControl, Modal, Button} from 'react-bootstrap'
-
+import EntityType from '../utils/EntityType'
 
 class EditComment extends Component {
 
@@ -16,6 +16,31 @@ class EditComment extends Component {
     console.log(e.target.value);
   }
 
+  handleTitleChange = (e) => {
+    console.log(e.target.value);
+  }
+
+  showAdditionalInputs = () => {
+    return this.props.entityType === EntityType.Post
+  }
+
+  getAdditionalInputs = () => {
+    return (
+      <FormGroup>
+        <ControlLabel>Title</ControlLabel>
+        <FormControl
+          type='text'
+          defaultValue={this.props.entity.title}
+          onChange={this.props.handleTitleChange}>
+        </FormControl>
+        <ControlLabel>Select Category</ControlLabel>
+        <FormControl componentClass='select' placeholder='Select Category' defaultValue={this.props.entity.category}>
+          {this.props.categories.map((category) => (<option key={category.path} value={category.name}>{category.name}</option>))}
+        </FormControl>
+      </FormGroup>
+    )
+  }
+
   render() {
     const {actionType, entityType, entity, onCancel, onSubmit} = this.props
     return (
@@ -24,6 +49,7 @@ class EditComment extends Component {
             <Modal.Title>{actionType.name} {entityType.name}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            {this.showAdditionalInputs() && this.getAdditionalInputs() }
             <FormGroup>
               <ControlLabel>Body</ControlLabel>
               <FormControl
