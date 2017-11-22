@@ -4,65 +4,90 @@ import EntityType from '../utils/EntityType'
 
 class EditComment extends Component {
 
-  onEditClick = () => {
-    this.setState({showDialog: true})
+  constructor(props) {
+      super(props)
+      this.state = {
+        title: props.entity.title,
+        body: props.entity.body,
+        category: props.entity.category ? props.entity.category : props.categories[0].name,
+        author: props.entity.author,
+        id: props.entity.id,
+        timestamp: props.entity.timestamp
+      }
+
+      this.handleInputChange = this.handleInputChange.bind(this)
+      this.handleSubmit = this.handleSubmit.bind(this)
+    }
+
+
+  handleInputChange(event) {
+    const target = event.target
+    const name = target.name
+
+    this.setState({
+      [name]: target.value
+    })
   }
 
-  handleBodyChange = (e) => {
-    console.log(e.target.value);
+  handleSubmit(event) {
+    event.preventDefault()
+
+    console.log(JSON.stringify(this.state))
+    this.props.onSubmit()
   }
 
-  handleAuthorChange = (e) => {
-    console.log(e.target.value);
-  }
-
-  handleTitleChange = (e) => {
-    console.log(e.target.value);
-  }
-
-  showAdditionalInputs = () => {
+  showAdditionaPostInputControls = () => {
     return this.props.entityType === EntityType.Post
   }
 
-  getAdditionalInputs = () => {
+  getAdditionaPostInputControls = () => {
     return (
-      <FormGroup>
-        <ControlLabel>Title</ControlLabel>
-        <FormControl
-          type='text'
-          defaultValue={this.props.entity.title}
-          onChange={this.props.handleTitleChange}>
-        </FormControl>
-        <ControlLabel>Select Category</ControlLabel>
-        <FormControl componentClass='select' placeholder='Select Category' defaultValue={this.props.entity.category}>
-          {this.props.categories.map((category) => (<option key={category.path} value={category.name}>{category.name}</option>))}
-        </FormControl>
-      </FormGroup>
+      <div>
+        <FormGroup>
+          <ControlLabel>Title</ControlLabel>
+          <FormControl
+            name='title'
+            type='text'
+            defaultValue={this.state.title}
+            onChange={this.handleInputChange}>
+          </FormControl>
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Select Category</ControlLabel>
+          <FormControl name='category' onChange={this.handleInputChange} componentClass='select' defaultValue={this.state.category}>
+            {this.props.categories.map((category) => (<option key={category.name} value={category.name}>{category.name}</option>))}
+          </FormControl>
+        </FormGroup>
+      </div>
     )
   }
 
   render() {
-    const {actionType, entityType, entity, onCancel, onSubmit} = this.props
+    const {actionType, entityType, onCancel} = this.props
     return (
         <Modal.Dialog>
           <Modal.Header>
             <Modal.Title>{actionType.name} {entityType.name}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {this.showAdditionalInputs() && this.getAdditionalInputs() }
+            {this.showAdditionaPostInputControls() && this.getAdditionaPostInputControls() }
             <FormGroup>
               <ControlLabel>Body</ControlLabel>
               <FormControl
                 type='text'
+                name='body'
                 componentClass='textarea'
-                defaultValue={entity.body}
-                onChange={this.handleBodyChange}
+                defaultValue={this.state.body}
+                onChange={this.handleInputChange}
               />
+            </FormGroup>
+            <FormGroup>
               <ControlLabel>Author</ControlLabel>
               <FormControl
                 type='textarea'
-                defaultValue={entity.author}
-                onChange={this.handleAuthorChange}/>
+                name='author'
+                defaultValue={this.state.author}
+                onChange={this.handleInputChange}/>
             </FormGroup>
           </Modal.Body>
           <Modal.Footer>
@@ -72,9 +97,9 @@ class EditComment extends Component {
             </Button>
             <Button
               bsStyle='primary'
-              onClick={onSubmit}
+              onClick={this.handleSubmit}
             type="submit">
-              Save
+              Submit
             </Button>
           </Modal.Footer>
         </Modal.Dialog>
