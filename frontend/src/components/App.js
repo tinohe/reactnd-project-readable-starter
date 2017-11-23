@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import Posts from './Posts'
+import { Route, Switch } from 'react-router-dom'
 import * as API from '../utils/Api'
-import { Route, Switch } from 'react-router-dom';
+import ErrorPage from './ErrorPage'
+import Posts from './Posts'
 
 class App extends Component {
 
@@ -32,6 +33,9 @@ class App extends Component {
               posts={this.state.posts.filter((post) => (category.name ? (post.category === category.name) : true))}
             />)}
             />))}
+              <Route
+                render={ () => (   <ErrorPage/>)}
+              />
             </Switch>
             </div>
           )
