@@ -57,6 +57,10 @@ class Post extends Component {
     this.setState({showCreateCommentDialog: false})
   }
 
+  getComments = () => {
+      return this.state.comments.map((comment) => <Comment key={comment.id} comment={comment}/>)
+  }
+
   render() {
     const {post, categories} = this.props
 
@@ -83,8 +87,9 @@ class Post extends Component {
           <Row>Number of Comments: <Badge>{this.state.comments.length}</Badge></Row>
         </Grid>
         <div className='comments'>
-          {this.state.comments.map((comment) => <Comment key={comment.id} comment={comment}/>)}
+          {this.getComments()}
         </div>
+
         {this.state.showCreateCommentDialog && <EditComment
           actionType={ActionType.Create}
           entityType={EntityType.Comment}
@@ -98,7 +103,7 @@ class Post extends Component {
           entity={post}
           onCancel={this.onEditPostCancel}
           onSubmit={this.onEditPostSubmit}
-          categories={categories}                                />}
+          categories={categories}/>}
 
       </Panel>
       )
