@@ -24,6 +24,10 @@ class Comment extends Component {
     this.setState({showEditDialog: false})
   }
 
+  onVoteChange = (voteChange) => {
+    console.log(voteChange);
+  }
+
   render() {
     const {comment} = this.props
     return (
@@ -37,7 +41,7 @@ class Comment extends Component {
             </Col>
           </Row>
           <Row><h5>{comment.body}</h5></Row>
-          <VoteScore voteScore={comment.voteScore}/>
+          <VoteScore voteScore={comment.voteScore} onVoteChange={this.onVoteChange}/>
         </Grid>
         {this.state.showEditDialog && <EditComment
           actionType={ActionType.Edit}

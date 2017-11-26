@@ -57,6 +57,10 @@ class Post extends Component {
     this.setState({showCreateCommentDialog: false})
   }
 
+  onVoteChange = (voteChange) => {
+    console.log(voteChange);
+  }
+
   getComments = () => {
       return this.state.comments.map((comment) => <Comment key={comment.id} comment={comment}/>)
   }
@@ -83,7 +87,7 @@ class Post extends Component {
             <Col><h3>{post.title}</h3></Col>
           </Row>
           <Row><h4>{post.body}</h4></Row>
-          <VoteScore voteScore={post.voteScore}/>
+          <VoteScore voteScore={post.voteScore} onVoteChange={this.onVoteChange}/>
           <Row>Number of Comments: <Badge>{this.state.comments.length}</Badge></Row>
         </Grid>
         <div className='comments'>
