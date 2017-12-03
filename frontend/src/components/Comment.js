@@ -4,7 +4,7 @@ import * as Formatter from '../utils/Formatter'
 import EntityType from '../utils/EntityType'
 import ActionType from '../utils/ActionType'
 import VoteScore from './VoteScore'
-import EditComment from './EditComment'
+import EditCreateModal from './EditCreateModal'
 
 import EditDeleteButtonGroup from './EditDeleteButtonGroup'
 
@@ -43,7 +43,7 @@ class Comment extends Component {
           <Row><h5>{comment.body}</h5></Row>
           <VoteScore voteScore={comment.voteScore} onVoteChange={this.onVoteChange}/>
         </Grid>
-        {this.state.showEditDialog && <EditComment
+        {this.state.showEditDialog && <EditCreateModal
           actionType={ActionType.Edit}
           entityType={EntityType.Comment}
           entity={comment}

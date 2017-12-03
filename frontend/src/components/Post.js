@@ -5,11 +5,11 @@ import * as API from '../utils/Api'
 import Comment from './Comment'
 import VoteScore from './VoteScore'
 import EditDeleteButtonGroup from './EditDeleteButtonGroup'
-import EditComment from './EditComment'
+import EditCreateModal from './EditCreateModal'
 import EntityType from '../utils/EntityType'
 import ActionType from '../utils/ActionType'
 import { connect } from 'react-redux'
-import ConfirmDeletion from './ConfirmDeletion'
+import ConfirmDeletionModal from './ConfirmDeletionModal'
 
 import { updatePost, fetchPost, changePostUpdateDialogState, deletePost, changePostDeleteDialogState } from '../actions'
 
@@ -100,19 +100,19 @@ class Post extends Component {
           {this.getComments()}
         </div>
 
-        {uiDialogState.showPostDeleteDialog && uiDialogState.postId === post.id && <ConfirmDeletion
+        {uiDialogState.showPostDeleteDialog && uiDialogState.postId === post.id && <ConfirmDeletionModal
           entityType={EntityType.Post}
           onCancel={this.onDeletePostCancel}
           onConfirm={this.onDeletePostConfirm} />}
 
-        {this.state.showCreateCommentDialog && <EditComment
+        {this.state.showCreateCommentDialog && <EditCreateModal
           actionType={ActionType.Create}
           entityType={EntityType.Comment}
           entity={{}}
           onCancel={this.onCreateCommentCancel}
           onSubmit={this.onCreateCommentSubmit} />}
 
-        {uiDialogState.showPostUpdateDialog && uiDialogState.postId === post.id && <EditComment
+        {uiDialogState.showPostUpdateDialog && uiDialogState.postId === post.id && <EditCreateModal
           actionType={ActionType.Edit}
           entityType={EntityType.Post}
           entity={post}

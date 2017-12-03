@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
 import {Panel, PageHeader, Button, ToggleButtonGroup, Glyphicon, ToggleButton , ButtonToolbar} from 'react-bootstrap'
 import Post from './Post'
-import EditComment from './EditComment'
+import EditCreateModal from './EditCreateModal'
 
 import EntityType from '../utils/EntityType'
 import ActionType from '../utils/ActionType'
@@ -71,7 +71,7 @@ class Posts extends Component {
 
         {this.sortPosts(posts).map((post) => (<Post key={post.id} postId={post.id}/>))}
 
-        {uiDialogState.showPostCreateDialog && <EditComment
+        {uiDialogState.showPostCreateDialog && <EditCreateModal
           actionType={ActionType.Create}
           entityType={EntityType.Post}
           entity={{}}

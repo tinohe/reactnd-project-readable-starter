@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 const SUCCESS_STATE = 'success'
 const ERROR_STATE = 'error'
 
-class EditComment extends Component {
+class EditCreateModal extends Component {
 
   constructor(props) {
     super(props)
@@ -149,5 +149,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(EditComment)
-
+export default connect(mapStateToProps)(EditCreateModal)
