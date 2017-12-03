@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { FormGroup, ControlLabel, FormControl, Modal, Button} from 'react-bootstrap'
 import EntityType from '../utils/EntityType'
+import ActionType from '../utils/ActionType'
 import ValidationAlert from './ValidationAlert'
 
 const SUCCESS_STATE = 'success'
@@ -13,6 +14,7 @@ class EditComment extends Component {
       this.state = {
         showValidationAlert: false,
         entityData: {
+          id: props.entity.id,
           title: props.entity.title,
           body: props.entity.body,
           category: props.entity.category ? props.entity.category : (props.categories ? props.categories[0].name : null),
@@ -91,18 +93,21 @@ class EditComment extends Component {
   }
 
   getCategoryInput = () => {
+    const disableState = this.props.actionType === ActionType.Edit
     return this.showAdditionaPostInputControls() && (<FormGroup>
       <ControlLabel>Select Category</ControlLabel>
-      <FormControl name='category' onChange={this.handleInputChange} componentClass='select' defaultValue={this.state.entityData.category}>
+      <FormControl disabled={disableState} name='category' onChange={this.handleInputChange} componentClass='select' defaultValue={this.state.entityData.category}>
         {this.props.categories.map((category) => (<option key={category.name} value={category.name}>{category.name}</option>))}
       </FormControl>
     </FormGroup>)
   }
 
   getAuthorInput = () => {
+    const disableState = this.props.actionType === ActionType.Edit
     return  <FormGroup  validationState={this.isInputValid(this.state.entityData.author)}>
       <ControlLabel>Author</ControlLabel>
       <FormControl
+        disabled={disableState}
         type='textarea'
         name='author'
         defaultValue={this.state.entityData.author}

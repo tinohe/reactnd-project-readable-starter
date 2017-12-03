@@ -20,6 +20,12 @@ export const fetchPosts = () => {
     .then((response) => response.json())
 }
 
+export const fetchPost = (postId) => {
+
+  return fetch(`${HOST_AND_PORT}/posts/${postId}`, { headers, method: 'GET' })
+    .then((response) => response.json())
+}
+
 export const fetchCommentForPost = (postId) => {
 
   return fetch(`${HOST_AND_PORT}/posts/${postId}/comments`, { headers, method: 'GET' })
@@ -28,5 +34,15 @@ export const fetchCommentForPost = (postId) => {
 
 export const createComment = (commentData) => {
   return fetch(`${HOST_AND_PORT}/comments`, { headers, method: 'POST',  body: JSON.stringify(commentData)})
+    .then((response) => response.json())
+}
+
+export const createPost = (postData) => {
+  return fetch(`${HOST_AND_PORT}/posts`, { headers, method: 'POST',  body: JSON.stringify(postData)})
+    .then((response) => response.json())
+}
+
+export const updatePost = (postData) => {
+  return fetch(`${HOST_AND_PORT}/posts/${postData.id}`, { headers, method: 'PUT',  body: JSON.stringify({title: postData.title, body: postData.body})})
     .then((response) => response.json())
 }

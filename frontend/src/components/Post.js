@@ -8,6 +8,9 @@ import EditDeleteButtonGroup from './EditDeleteButtonGroup'
 import EditComment from './EditComment'
 import EntityType from '../utils/EntityType'
 import ActionType from '../utils/ActionType'
+import {connect} from 'react-redux'
+
+import {updatePost, fetchPost} from '../actions'
 
 class Post extends Component {
 
@@ -24,13 +27,7 @@ class Post extends Component {
   }
 
   componentDidMount = () => {
-    this.fetchCommentsForPost(this.props.post.id)
-  }
-
-  componentWillReceiveProps = (nextProps) => {
-    if (this.props !== nextProps) {
-      this.fetchCommentsForPost(nextProps.post.id)
-    }
+    // this.fetchCommentsForPost(this.props.postId)
   }
 
   onEditPostClick = () => {
@@ -41,9 +38,9 @@ class Post extends Component {
     this.setState({showEditPostDialog: false})
   }
 
-  onEditPostSubmit = () => {
-    this.setState({showEditPostDialog: false})
-  }
+  // onEditPostSubmit = () => {
+  //   this.setState({showEditPostDialog: false})
+  // }
 
   onOpenCreateComment = () => {
     this.setState({showCreateCommentDialog: true})
@@ -66,7 +63,7 @@ class Post extends Component {
   }
 
   render() {
-    const {post, categories} = this.props
+    const {post, categories, onEditPostSubmit} = this.props
 
     return (
       <Panel header={Formatter.formatAuthorAndTimestamp('Posted', post.author, post.timestamp)}>
@@ -88,7 +85,7 @@ class Post extends Component {
           </Row>
           <Row><h4>{post.body}</h4></Row>
           <VoteScore voteScore={post.voteScore} onVoteChange={this.onVoteChange}/>
-          <Row>Number of Comments: <Badge>{this.state.comments.length}</Badge></Row>
+          <Row>Number of Comments: <Badge>{post.commentCount}</Badge></Row>
         </Grid>
         <div className='comments'>
           {this.getComments()}
@@ -106,7 +103,7 @@ class Post extends Component {
           entityType={EntityType.Post}
           entity={post}
           onCancel={this.onEditPostCancel}
-          onSubmit={this.onEditPostSubmit}
+          onSubmit={onEditPostSubmit}
           categories={categories}/>}
 
       </Panel>
@@ -114,4 +111,18 @@ class Post extends Component {
   }
 }
 
-export default Post
+const mapStateToProps = (state, ownProps) => {
+  return {
+    categories: state.categories,
+    post: state.posts.filter((post) => post.id === ownProps.postId)[0]
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onEditPostSubmit: (postData) => {dispatch(updatePost(postData))},
+    fetchPost: (postId) => {dispatch(fetchPost(postId))}
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Post)

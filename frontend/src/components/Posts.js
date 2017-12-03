@@ -8,12 +8,14 @@ import EntityType from '../utils/EntityType'
 import ActionType from '../utils/ActionType'
 
 import SortMode from '../utils/SortMode'
+import {connect} from 'react-redux'
+
+import {updatePostDialogState, createPost} from '../actions'
 
 class Posts extends Component {
 
   state = {
     selectedSearchMode: SortMode.voteScore,
-    showCreatePostDialog: false
   }
 
   sortPosts = (posts) => {
@@ -29,25 +31,24 @@ class Posts extends Component {
   }
 
   onOpenCreatePost = () => {
-    this.setState({showCreatePostDialog: true})
+    this.props.updatePostDialogState({showPostDialog: true})
   }
 
   onCreatePostCancel = () => {
-    this.setState({showCreatePostDialog: false})
+    this.props.updatePostDialogState({showPostDialog: false})
   }
 
-  onCreatePostSubmit = () => {
-    this.setState({showCreatePostDialog: false})
+  onCreatePostSubmit = (postData) => {
+    this.props.updatePostDialogState({showPostDialog: false})
+    this.props.onPostSubmit(postData)
   }
-
 
   getClassName = (activeLink, link) => {
     return activeLink === link ? 'active' : ''
   }
 
   render() {
-
-    const {posts, categories, selectedCategory} = this.props
+    const {posts, categories, selectedCategory, uiDialogState} = this.props
 
     return (
       <Panel>
@@ -69,10 +70,9 @@ class Posts extends Component {
           </ToggleButtonGroup>
         </ButtonToolbar>
 
+        {this.sortPosts(posts).map((post) => (<Post key={post.id} postId={post.id}/>))}
 
-        {this.sortPosts(posts).map((post) => (<Post key={post.id} post={post} categories={categories}/>))}
-
-        {this.state.showCreatePostDialog && <EditComment
+        {uiDialogState.showPostDialog && <EditComment
           actionType={ActionType.Create}
           entityType={EntityType.Post}
           entity={{}}
@@ -84,4 +84,23 @@ class Posts extends Component {
   }
 }
 
-export default Posts
+const mapStateToProps = (state) => {
+
+  return {
+    // category: state.selectedCategory,
+    // posts: state.posts.filter((post) => (state.selectedCategory ? (post.category === state.selectedCategory) : true)),
+    posts: state.posts,
+    categories: state.categories,
+    uiDialogState: state.uiDialogState
+
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onPostSubmit: (postData) => {dispatch(createPost(postData))},
+    updatePostDialogState: (dialogState) => {dispatch(updatePostDialogState(dialogState))}
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Posts)
