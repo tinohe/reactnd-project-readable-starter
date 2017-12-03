@@ -10,7 +10,7 @@ import ActionType from '../utils/ActionType'
 import SortMode from '../utils/SortMode'
 import {connect} from 'react-redux'
 
-import {updatePostDialogState, createPost} from '../actions'
+import {changePostCreateDialogState, createPost} from '../actions'
 
 class Posts extends Component {
 
@@ -31,11 +31,11 @@ class Posts extends Component {
   }
 
   onOpenCreatePost = () => {
-    this.props.updatePostDialogState({showPostDialog: true})
+    this.props.changePostCreateDialogState({showPostDialog: true})
   }
 
   onCreatePostCancel = () => {
-    this.props.updatePostDialogState({showPostDialog: false})
+    this.props.changePostCreateDialogState({showPostDialog: false})
   }
 
   onCreatePostSubmit = (postData) => {
@@ -71,7 +71,7 @@ class Posts extends Component {
 
         {this.sortPosts(posts).map((post) => (<Post key={post.id} postId={post.id}/>))}
 
-        {uiDialogState.showPostDialog && <EditComment
+        {uiDialogState.showPostCreateDialog && <EditComment
           actionType={ActionType.Create}
           entityType={EntityType.Post}
           entity={{}}
@@ -91,14 +91,13 @@ const mapStateToProps = (state) => {
     posts: state.posts,
     categories: state.categories,
     uiDialogState: state.uiDialogState
-
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onPostSubmit: (postData) => {dispatch(createPost(postData))},
-    updatePostDialogState: (dialogState) => {dispatch(updatePostDialogState(dialogState))}
+    changePostCreateDialogState: (dialogState) => {dispatch(changePostCreateDialogState(dialogState))}
   }
 }
 

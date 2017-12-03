@@ -16,13 +16,21 @@ export const FETCH_CATEGORIES = 'FETCH_CATEGORIES'
 export const FETCH_POSTS = 'FETCH_POSTS'
 export const FETCH_POST = 'FETCH_POST'
 
-export const UPDATE_POST_DIALOG_STATE = 'UPDATE_POST_DIALOG_STATE'
+export const CHANGE_POST_CREATE_DIALOG_STATE = 'SHOW_POST_CREATE_DIALOG_STATE'
+export const CHANGE_POST_UPDATE_DIALOG_STATE = 'SHOW_POST_UPDATE_DIALOG_STATE'
 export const UPDATE_COMMENT_DIALOG_STATE = 'UPDATE_COMMENT_DIALOG_STATE'
 
 
-export const updatePostDialogState = (dialogState) => {
+export const changePostCreateDialogState = (dialogState) => {
   return {
-    type: UPDATE_POST_DIALOG_STATE,
+    type: CHANGE_POST_CREATE_DIALOG_STATE,
+    dialogState
+  }
+}
+
+export const changePostUpdateDialogState = (dialogState) => {
+  return {
+    type: CHANGE_POST_UPDATE_DIALOG_STATE,
     dialogState
   }
 }
@@ -71,10 +79,10 @@ export const createPost = (postData) => dispatch => {
   API.createPost(postData)
     .then((response) => {
       if (response.ok) {
-        dispatch(updatePostDialogState({ showPostDialog: false }))
+        dispatch(changePostCreateDialogState({ showPostDialog: false }))
         return response.json();
       } else {
-        dispatch(updatePostDialogState({ showPostDialog: true, error: `error-code: ${response.status} (${response.statusText})`}))
+        dispatch(changePostCreateDialogState({ showPostDialog: true, error: `error-code: ${response.status} (${response.statusText})`}))
       }
     })
     .then((post) => dispatch(
@@ -90,9 +98,10 @@ export const updatePost = (postData) => dispatch => {
   API.updatePost(postData)
   .then((response) => {
     if (response.ok) {
+      dispatch(changePostUpdateDialogState({ showPostDialog: false }))
       return response.json();
     } else {
-      console.log(`error-code: ${response.status} (${response.statusText})`)
+      dispatch(changePostUpdateDialogState({ showPostDialog: true, error: `error-code: ${response.status} (${response.statusText})`}))
     }
   })
   .then((post) => dispatch(

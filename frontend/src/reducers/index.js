@@ -13,21 +13,21 @@ import {
   FETCH_POSTS,
   FETCH_POST,
   FETCH_CATEGORIES,
-  UPDATE_POST_DIALOG_STATE,
+  CHANGE_POST_CREATE_DIALOG_STATE,
+  CHANGE_POST_UPDATE_DIALOG_STATE,
   UPDATE_COMMENT_DIALOG_STATE
 } from '../actions'
 
 
-const uiDialogState = (state = { showPostDialog: false, showCommentDialog: false }, action) => {
+const uiDialogState = (state = { showPostCreateDialog: false, showPostUpdateDialog: false }, action) => {
 
   switch (action.type) {
 
-    case UPDATE_POST_DIALOG_STATE: {
-      return Object.assign({}, state, { showPostDialog: action.dialogState.showPostDialog, error: action.dialogState.error })
+    case CHANGE_POST_CREATE_DIALOG_STATE: {
+      return Object.assign({}, state, { showPostCreateDialog: action.dialogState.showPostDialog, error: action.dialogState.error })
     }
-
-    case UPDATE_COMMENT_DIALOG_STATE: {
-      return Object.assign({}, state, { showCommentDialog: action.dialogState.showCommentDialog })
+    case CHANGE_POST_UPDATE_DIALOG_STATE: {
+      return Object.assign({}, state, { showPostUpdateDialog: action.dialogState.showPostDialog, postId:action.dialogState.postId,  error: action.dialogState.error })
     }
 
     default: {
