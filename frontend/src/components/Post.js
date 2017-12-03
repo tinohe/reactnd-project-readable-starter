@@ -11,14 +11,13 @@ import ActionType from '../utils/ActionType'
 import { connect } from 'react-redux'
 import ConfirmDeletion from './ConfirmDeletion'
 
-import { updatePost, fetchPost, changePostUpdateDialogState } from '../actions'
+import { updatePost, fetchPost, changePostUpdateDialogState, deletePost, changePostDeleteDialogState } from '../actions'
 
 class Post extends Component {
 
   state = {
     comments: [],
-    showCreateCommentDialog: false,
-    showConfirmDeletePost: false
+    showCreateCommentDialog: false
   }
 
   fetchCommentsForPost = (postId) => {
@@ -40,17 +39,15 @@ class Post extends Component {
   }
 
   onDeletePostClick = () => {
-    console.log("deleting")
-    this.setState({ showConfirmDeletePost: true })
+    this.props.changePostDeleteDialogState({ showPostDialog: true, postId: this.props.post.id })
   }
   
   onDeletePostCancel = () => {
-    console.log("deleting cancel")
-    this.setState({ showConfirmDeletePost: false })
+    this.props.changePostDeleteDialogState({ showPostDialog: false, postId: this.props.post.id })
   }
 
   onDeletePostConfirm = () => {
-    console.log("deleting confirm")
+    this.props.deletePost(this.props.post.id)
     this.setState({ showConfirmDeletePost: false })
   }
 
@@ -103,7 +100,7 @@ class Post extends Component {
           {this.getComments()}
         </div>
 
-        {this.state.showConfirmDeletePost && <ConfirmDeletion
+        {uiDialogState.showPostDeleteDialog && uiDialogState.postId === post.id && <ConfirmDeletion
           entityType={EntityType.Post}
           onCancel={this.onDeletePostCancel}
           onConfirm={this.onDeletePostConfirm} />}
@@ -140,7 +137,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onEditPostSubmit: (postData) => { dispatch(updatePost(postData)) },
     fetchPost: (postId) => { dispatch(fetchPost(postId)) },
-    changePostUpdateDialogState: (dialogState) => { dispatch(changePostUpdateDialogState(dialogState)) }
+    changePostUpdateDialogState: (dialogState) => { dispatch(changePostUpdateDialogState(dialogState)) },
+    changePostDeleteDialogState: (dialogState) => { dispatch(changePostDeleteDialogState(dialogState)) },
+    deletePost: (postId) => dispatch(deletePost(postId))
   }
 }
 

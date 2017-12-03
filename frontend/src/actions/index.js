@@ -18,6 +18,9 @@ export const FETCH_POST = 'FETCH_POST'
 
 export const CHANGE_POST_CREATE_DIALOG_STATE = 'SHOW_POST_CREATE_DIALOG_STATE'
 export const CHANGE_POST_UPDATE_DIALOG_STATE = 'SHOW_POST_UPDATE_DIALOG_STATE'
+export const CHANGE_POST_DELETE_DIALOG_STATE = 'SHOW_POST_DELETE_DIALOG_STATE'
+
+
 export const UPDATE_COMMENT_DIALOG_STATE = 'UPDATE_COMMENT_DIALOG_STATE'
 
 
@@ -31,6 +34,13 @@ export const changePostCreateDialogState = (dialogState) => {
 export const changePostUpdateDialogState = (dialogState) => {
   return {
     type: CHANGE_POST_UPDATE_DIALOG_STATE,
+    dialogState
+  }
+}
+
+export const changePostDeleteDialogState = (dialogState) => {
+  return {
+    type: CHANGE_POST_DELETE_DIALOG_STATE,
     dialogState
   }
 }
@@ -82,7 +92,7 @@ export const createPost = (postData) => dispatch => {
         dispatch(changePostCreateDialogState({ showPostDialog: false }))
         return response.json();
       } else {
-        dispatch(changePostCreateDialogState({ showPostDialog: true, error: `error-code: ${response.status} (${response.statusText})`}))
+        dispatch(changePostCreateDialogState({ showPostDialog: true, error: `error-code: ${response.status} (${response.statusText})` }))
       }
     })
     .then((post) => dispatch(
@@ -96,27 +106,38 @@ export const createPost = (postData) => dispatch => {
 export const updatePost = (postData) => dispatch => {
 
   API.updatePost(postData)
-  .then((response) => {
-    if (response.ok) {
-      dispatch(changePostUpdateDialogState({ showPostDialog: false }))
-      return response.json();
-    } else {
-      dispatch(changePostUpdateDialogState({ showPostDialog: true, error: `error-code: ${response.status} (${response.statusText})`}))
-    }
-  })
-  .then((post) => dispatch(
-    {
-      type: UPDATE_POST,
-      post
-    }
-  ))
+    .then((response) => {
+      if (response.ok) {
+        dispatch(changePostUpdateDialogState({ showPostDialog: false }))
+        return response.json();
+      } else {
+        dispatch(changePostUpdateDialogState({ showPostDialog: true, error: `error-code: ${response.status} (${response.statusText})` }))
+      }
+    })
+    .then((post) => dispatch(
+      {
+        type: UPDATE_POST,
+        post
+      }
+    ))
 }
 
-export const deletePost = (postId) => {
-  return {
-    type: DELETE_POST,
-    postId
-  }
+export const deletePost = (postId) => dispatch => {
+  API.deletePost(postId)
+    .then((response) => {
+      if (response.ok) {
+        dispatch(changePostDeleteDialogState({ showPostDialog: false }))
+        return response.json();
+      } else {
+        dispatch(changePostDeleteDialogState({ showPostDialog: true, error: `error-code: ${response.status} (${response.statusText})` }))
+      }
+    })
+    .then(() => dispatch(
+      {
+        type: DELETE_POST,
+        postId
+      }
+    ))
 }
 
 export const incPostVote = (postId) => {

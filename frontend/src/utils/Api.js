@@ -44,3 +44,7 @@ export const createPost = (postData) => {
 export const updatePost = (postData) => {
   return fetch(`${HOST_AND_PORT}/posts/${postData.id}`, { headers, method: 'PUT', body: JSON.stringify({ title: postData.title, body: postData.body }) })
 }
+
+export const deletePost = (postId) => {
+  return fetch(`${HOST_AND_PORT}/posts/${postId}`, { headers, method: 'DELETE' })
+}

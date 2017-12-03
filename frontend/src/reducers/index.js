@@ -15,6 +15,7 @@ import {
   FETCH_CATEGORIES,
   CHANGE_POST_CREATE_DIALOG_STATE,
   CHANGE_POST_UPDATE_DIALOG_STATE,
+  CHANGE_POST_DELETE_DIALOG_STATE,
   UPDATE_COMMENT_DIALOG_STATE
 } from '../actions'
 
@@ -28,6 +29,9 @@ const uiDialogState = (state = { showPostCreateDialog: false, showPostUpdateDial
     }
     case CHANGE_POST_UPDATE_DIALOG_STATE: {
       return Object.assign({}, state, { showPostUpdateDialog: action.dialogState.showPostDialog, postId:action.dialogState.postId,  error: action.dialogState.error })
+    }
+    case CHANGE_POST_DELETE_DIALOG_STATE: {
+      return Object.assign({}, state, { showPostDeleteDialog: action.dialogState.showPostDialog, postId:action.dialogState.postId,  error: action.dialogState.error })
     }
 
     default: {
@@ -68,6 +72,9 @@ const posts = (state = [], action) => {
     }
     case UPDATE_POST: {
       return state.filter((p) => (p.id !== action.post.id)).concat(action.post)
+    }
+    case DELETE_POST: {
+      return state.filter((p) => (p.id !== action.postId))
     }
     default: {
       return state
