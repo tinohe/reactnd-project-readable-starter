@@ -1,9 +1,8 @@
 import React from 'react'
 import { Modal, Button } from 'react-bootstrap'
 
-const ConfirmDeletion = (props) => {
+const ConfirmDeletion = ({ entityType, onCancel, onConfirm }) => {
 
-  const { entityType, onCancel, onConfirm } = props
   return (
     <Modal.Dialog>
       <Modal.Header>
