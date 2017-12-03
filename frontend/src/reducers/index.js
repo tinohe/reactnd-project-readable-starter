@@ -50,7 +50,6 @@ const categories = (state = [], action) => {
 }
 
 const posts = (state = [], action) => {
-  console.log(action);
   switch (action.type) {
 
     case FETCH_POSTS: {

@@ -7,7 +7,7 @@ class EditDeleteButtonGroup extends Component {
 
 
   render() {
-    const {entityType, bsSize, onEditClick} = this.props
+    const {entityType, bsSize, onEditClick, onDeleteClick} = this.props
 
     return (
           <ButtonGroup>
@@ -17,7 +17,7 @@ class EditDeleteButtonGroup extends Component {
               </Button>
             </OverlayTrigger>
             <OverlayTrigger placement='top' overlay={<Tooltip id={ActionType.Delete.name}>{ActionType.Delete.name} {entityType.name}</Tooltip>}>
-              <Button bsSize={bsSize}>
+              <Button bsSize={bsSize} onClick={onDeleteClick}>
                 <Glyphicon glyph='trash' />
               </Button>
             </OverlayTrigger>

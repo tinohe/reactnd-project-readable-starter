@@ -9,6 +9,7 @@ import EditComment from './EditComment'
 import EntityType from '../utils/EntityType'
 import ActionType from '../utils/ActionType'
 import { connect } from 'react-redux'
+import ConfirmDeletion from './ConfirmDeletion'
 
 import { updatePost, fetchPost, changePostUpdateDialogState } from '../actions'
 
@@ -17,6 +18,7 @@ class Post extends Component {
   state = {
     comments: [],
     showCreateCommentDialog: false,
+    showConfirmDeletePost: false
   }
 
   fetchCommentsForPost = (postId) => {
@@ -37,9 +39,20 @@ class Post extends Component {
     this.props.changePostUpdateDialogState({ showPostDialog: false, postId: this.props.post.id })
   }
 
-  // onEditPostSubmit = () => {
-  //   this.setState({showEditPostDialog: false})
-  // }
+  onDeletePostClick = () => {
+    console.log("deleting")
+    this.setState({ showConfirmDeletePost: true })
+  }
+  
+  onDeletePostCancel = () => {
+    console.log("deleting cancel")
+    this.setState({ showConfirmDeletePost: false })
+  }
+
+  onDeletePostConfirm = () => {
+    console.log("deleting confirm")
+    this.setState({ showConfirmDeletePost: false })
+  }
 
   onOpenCreateComment = () => {
     this.setState({ showCreateCommentDialog: true })
@@ -62,9 +75,7 @@ class Post extends Component {
   }
 
   render() {
-    const { post, categories, onEditPostSubmit, uiDialogState, changePostUpdateDialogState } = this.props
-
-    console.log(post)
+    const { post, categories, onEditPostSubmit, uiDialogState } = this.props
 
     return (
       <Panel header={Formatter.formatAuthorAndTimestamp('Posted', post.author, post.timestamp)}>
@@ -72,7 +83,7 @@ class Post extends Component {
           <Row>
             <Col>
               <ButtonToolbar>
-                <EditDeleteButtonGroup entityType={EntityType.Post} onEditClick={this.onEditPostClick} />
+                <EditDeleteButtonGroup entityType={EntityType.Post} onEditClick={this.onEditPostClick} onDeleteClick={this.onDeletePostClick} />
                 <ButtonGroup>
                   <OverlayTrigger placement='top' overlay={<Tooltip id='create-comment'>{ActionType.Create.name} {EntityType.Comment.name}</Tooltip>}>
                     <Button onClick={this.onOpenCreateComment}>
@@ -91,6 +102,11 @@ class Post extends Component {
         <div className='comments'>
           {this.getComments()}
         </div>
+
+        {this.state.showConfirmDeletePost && <ConfirmDeletion
+          entityType={EntityType.Post}
+          onCancel={this.onDeletePostCancel}
+          onConfirm={this.onDeletePostConfirm} />}
 
         {this.state.showCreateCommentDialog && <EditComment
           actionType={ActionType.Create}
