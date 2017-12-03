@@ -12,9 +12,9 @@ export const DELETE_COMMENT = 'DELETE_COMMENT'
 export const INC_COMMENT_VOTE = 'INC_COMMENT_VOTE'
 export const DEC_COMMENT_VOTE = 'DEC_COMMENT_VOTE'
 
-export const FETCH_CATEGORIES ='FETCH_CATEGORIES'
-export const FETCH_POSTS ='FETCH_POSTS'
-export const FETCH_POST ='FETCH_POST'
+export const FETCH_CATEGORIES = 'FETCH_CATEGORIES'
+export const FETCH_POSTS = 'FETCH_POSTS'
+export const FETCH_POST = 'FETCH_POST'
 
 export const UPDATE_POST_DIALOG_STATE = 'UPDATE_POST_DIALOG_STATE'
 export const UPDATE_COMMENT_DIALOG_STATE = 'UPDATE_COMMENT_DIALOG_STATE'
@@ -22,15 +22,15 @@ export const UPDATE_COMMENT_DIALOG_STATE = 'UPDATE_COMMENT_DIALOG_STATE'
 
 export const updatePostDialogState = (dialogState) => {
   return {
-      type: UPDATE_POST_DIALOG_STATE,
-      dialogState
+    type: UPDATE_POST_DIALOG_STATE,
+    dialogState
   }
 }
 
 export const updateCommentDialogState = (dialogState) => {
   return {
-      type: UPDATE_COMMENT_DIALOG_STATE,
-      dialogState
+    type: UPDATE_COMMENT_DIALOG_STATE,
+    dialogState
   }
 }
 
@@ -40,35 +40,43 @@ export const fetchCategories = () => dispatch => (
       {
         type: FETCH_CATEGORIES,
         categories
-    }
-  ))
+      }
+    ))
 )
 
 export const fetchPosts = () => dispatch => (
   API.fetchPosts()
-  .then((posts) => dispatch(
-    {
-      type: FETCH_POSTS,
-      posts
-    }
-  ))
+    .then((posts) => dispatch(
+      {
+        type: FETCH_POSTS,
+        posts
+      }
+    ))
 )
 
 export const fetchPost = (postId) => dispatch => (
   API.fetchPost(postId)
-  .then((post) => dispatch(
-    {
-      type: FETCH_POST,
-      post
-    }
-  ))
+    .then((post) => dispatch(
+      {
+        type: FETCH_POST,
+        post
+      }
+    ))
 )
 
 export const createPost = (postData) => dispatch => {
-  postData.timestamp=Date.now()
-  postData.id=UUID.create()
+  postData.timestamp = Date.now()
+  postData.id = UUID.create()
 
   API.createPost(postData)
+    .then((response) => {
+      if (response.ok) {
+        dispatch(updatePostDialogState({ showPostDialog: false }))
+        return response.json();
+      } else {
+        dispatch(updatePostDialogState({ showPostDialog: true, error: `error-code: ${response.status} (${response.statusText})`}))
+      }
+    })
     .then((post) => dispatch(
       {
         type: CREATE_POST,
@@ -80,12 +88,19 @@ export const createPost = (postData) => dispatch => {
 export const updatePost = (postData) => dispatch => {
 
   API.updatePost(postData)
-    .then((post) => dispatch(
-      {
-        type: UPDATE_POST,
-        post
-      }
-    ))
+  .then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.log(`error-code: ${response.status} (${response.statusText})`)
+    }
+  })
+  .then((post) => dispatch(
+    {
+      type: UPDATE_POST,
+      post
+    }
+  ))
 }
 
 export const deletePost = (postId) => {

@@ -39,7 +39,6 @@ class Posts extends Component {
   }
 
   onCreatePostSubmit = (postData) => {
-    this.props.updatePostDialogState({showPostDialog: false})
     this.props.onPostSubmit(postData)
   }
 

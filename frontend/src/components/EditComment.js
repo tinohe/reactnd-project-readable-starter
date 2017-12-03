@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
-import { FormGroup, ControlLabel, FormControl, Modal, Button} from 'react-bootstrap'
+import { FormGroup, ControlLabel, FormControl, Modal, Button } from 'react-bootstrap'
 import EntityType from '../utils/EntityType'
 import ActionType from '../utils/ActionType'
 import ValidationAlert from './ValidationAlert'
+import SubmissionAlert from './SubmissionAlert'
+
+import { connect } from 'react-redux'
 
 const SUCCESS_STATE = 'success'
 const ERROR_STATE = 'error'
@@ -10,26 +13,26 @@ const ERROR_STATE = 'error'
 class EditComment extends Component {
 
   constructor(props) {
-      super(props)
-      this.state = {
-        showValidationAlert: false,
-        entityData: {
-          id: props.entity.id,
-          title: props.entity.title,
-          body: props.entity.body,
-          category: props.entity.category ? props.entity.category : (props.categories ? props.categories[0].name : null),
-          author: props.entity.author
-        }
+    super(props)
+    this.state = {
+      showValidationAlert: false,
+      entityData: {
+        id: props.entity.id,
+        title: props.entity.title,
+        body: props.entity.body,
+        category: props.entity.category ? props.entity.category : (props.categories ? props.categories[0].name : null),
+        author: props.entity.author
       }
-
-      this.handleInputChange = this.handleInputChange.bind(this)
-      this.handleSubmit = this.handleSubmit.bind(this)
     }
+
+    this.handleInputChange = this.handleInputChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
 
   handleInputChange(event) {
     const name = event.target.name
     const value = event.target.value
-    const isValid = this.areAllInputsValid(Object.assign({}, this.state.entityData, {[name]: value}))
+    const isValid = this.areAllInputsValid(Object.assign({}, this.state.entityData, { [name]: value }))
 
     this.setState((prevState) => {
       return {
@@ -47,7 +50,7 @@ class EditComment extends Component {
     if (this.areAllInputsValid(this.state.entityData)) {
       this.props.onSubmit(this.state.entityData)
     } else {
-      this.setState({showValidationAlert: true})
+      this.setState({ showValidationAlert: true })
     }
   }
 
@@ -56,7 +59,7 @@ class EditComment extends Component {
   }
 
   isInputValid(value) {
-    const length = value ? value.length : 0
+    const length = value ? value.trim().length : 0
     return length > 0 ? SUCCESS_STATE : ERROR_STATE
   }
 
@@ -104,38 +107,47 @@ class EditComment extends Component {
 
   getAuthorInput = () => {
     const disableState = this.props.actionType === ActionType.Edit
-    return  <FormGroup  validationState={this.isInputValid(this.state.entityData.author)}>
+    return <FormGroup validationState={this.isInputValid(this.state.entityData.author)}>
       <ControlLabel>Author</ControlLabel>
       <FormControl
         disabled={disableState}
         type='textarea'
         name='author'
         defaultValue={this.state.entityData.author}
-        onChange={this.handleInputChange}/>
+        onChange={this.handleInputChange} />
     </FormGroup>
   }
 
   render() {
-    const {actionType, entityType, onCancel} = this.props
+    const { actionType, entityType, onCancel, uiDialogState } = this.props
     return (
-        <Modal.Dialog>
-          <Modal.Header>
-            <Modal.Title>{actionType.name} {entityType.name}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {this.getTitleInput()}
-            {this.getBodyInput()}
-            {this.getCategoryInput()}
-            {this.getAuthorInput()}
-            {this.state.showValidationAlert && <ValidationAlert/>}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={onCancel}> Cancel</Button>
-            <Button bsStyle='primary'onClick={this.handleSubmit} type="submit">Submit</Button>
-          </Modal.Footer>
-        </Modal.Dialog>
-      )
+      <Modal.Dialog>
+        <Modal.Header>
+          <Modal.Title>{actionType.name} {entityType.name}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {this.getTitleInput()}
+          {this.getBodyInput()}
+          {this.getCategoryInput()}
+          {this.getAuthorInput()}
+          {this.state.showValidationAlert && <ValidationAlert />}
+          {uiDialogState.error && <SubmissionAlert error={uiDialogState.error} />}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={onCancel}> Cancel</Button>
+          <Button bsStyle='primary' onClick={this.handleSubmit} type="submit">Submit</Button>
+        </Modal.Footer>
+      </Modal.Dialog>
+    )
   }
 }
 
-export default EditComment
+const mapStateToProps = (state) => {
+
+  return {
+    uiDialogState: state.uiDialogState
+  }
+}
+
+export default connect(mapStateToProps)(EditComment)
+

@@ -23,7 +23,7 @@ const uiDialogState = (state = { showPostDialog: false, showCommentDialog: false
   switch (action.type) {
 
     case UPDATE_POST_DIALOG_STATE: {
-      return Object.assign({}, state, { showPostDialog: action.dialogState.showPostDialog })
+      return Object.assign({}, state, { showPostDialog: action.dialogState.showPostDialog, error: action.dialogState.error })
     }
 
     case UPDATE_COMMENT_DIALOG_STATE: {
@@ -60,7 +60,12 @@ const posts = (state = [], action) => {
       return [].concat(action.post)
     }
     case CREATE_POST: {
-      return state.concat(action.post)
+      if (action.post) {
+        return state.concat(action.post)
+      }
+      else {
+        return state
+      }
     }
     case UPDATE_POST: {
       return state.filter((p) => (p.id !== action.post.id)).concat(action.post)
