@@ -4,8 +4,7 @@ import {
   CREATE_POST,
   UPDATE_POST,
   DELETE_POST,
-  INC_POST_VOTE,
-  DEC_POST_VOTE,
+  UPDATE_POST_VOTE,
   CREATE_COMMENT,
   DELETE_COMMENT,
   INC_COMMENT_VOTE,
@@ -16,22 +15,27 @@ import {
   CHANGE_POST_CREATE_DIALOG_STATE,
   CHANGE_POST_UPDATE_DIALOG_STATE,
   CHANGE_POST_DELETE_DIALOG_STATE,
+  CHANGE_POST_VOTE_STATE,
   UPDATE_COMMENT_DIALOG_STATE
 } from '../actions'
 
+import { VoteScore, KEY_INC, KEY_DEC } from '../components/VoteScore'
 
-const uiDialogState = (state = { showPostCreateDialog: false, showPostUpdateDialog: false }, action) => {
 
+const uiDialogState = (state = {}, action) => {
   switch (action.type) {
 
     case CHANGE_POST_CREATE_DIALOG_STATE: {
       return Object.assign({}, state, { showPostCreateDialog: action.dialogState.showPostDialog, error: action.dialogState.error })
     }
     case CHANGE_POST_UPDATE_DIALOG_STATE: {
-      return Object.assign({}, state, { showPostUpdateDialog: action.dialogState.showPostDialog, postId:action.dialogState.postId,  error: action.dialogState.error })
+      return Object.assign({}, state, { showPostUpdateDialog: action.dialogState.showPostDialog, postId: action.dialogState.postId, error: action.dialogState.error })
     }
     case CHANGE_POST_DELETE_DIALOG_STATE: {
-      return Object.assign({}, state, { showPostDeleteDialog: action.dialogState.showPostDialog, postId:action.dialogState.postId,  error: action.dialogState.error })
+      return Object.assign({}, state, { showPostDeleteDialog: action.dialogState.showPostDialog, postId: action.dialogState.postId, deleteError: action.dialogState.error })
+    }
+    case CHANGE_POST_VOTE_STATE: {
+      return Object.assign({}, state, { postId: action.state.postId, changeVoteError: action.state.error })
     }
 
     default: {
@@ -54,6 +58,7 @@ const categories = (state = [], action) => {
 }
 
 const posts = (state = [], action) => {
+  
   switch (action.type) {
 
     case FETCH_POSTS: {
@@ -71,10 +76,37 @@ const posts = (state = [], action) => {
       }
     }
     case UPDATE_POST: {
-      return state.filter((p) => (p.id !== action.post.id)).concat(action.post)
+      if (action.post) {
+        return state.filter((p) => (p.id !== action.post.id)).concat(action.post)
+      }
+      else {
+        return state
+      }
     }
     case DELETE_POST: {
-      return state.filter((p) => (p.id !== action.postId))
+      if (action.postData.deleted) {
+        return state.filter((p) => (p.id !== action.postData.id))
+      }
+      else {
+        return state
+      } 
+    }
+    case UPDATE_POST_VOTE: {
+      
+      if (action.postData.success) {
+        const postToChange = Object.assign({}, state.find((post) => (post.id === action.postData.postId)))
+        const newState = state.filter((post) => (post.id !== action.postData.postId))
+        if (action.postData.option === KEY_INC) {
+          postToChange.voteScore = postToChange.voteScore + 1
+        }
+        if (action.postData.option === KEY_DEC) {
+          postToChange.voteScore = postToChange.voteScore - 1
+        }
+        return newState.concat(postToChange)
+      }
+      else {
+        return state
+      }
     }
     default: {
       return state

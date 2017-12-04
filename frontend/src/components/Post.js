@@ -10,8 +10,9 @@ import EntityType from '../utils/EntityType'
 import ActionType from '../utils/ActionType'
 import { connect } from 'react-redux'
 import ConfirmDeletionModal from './ConfirmDeletionModal'
+import SubmissionAlert from './SubmissionAlert'
 
-import { updatePost, fetchPost, changePostUpdateDialogState, deletePost, changePostDeleteDialogState } from '../actions'
+import { updatePost, fetchPost, changePostUpdateDialogState, deletePost, changePostDeleteDialogState, updatePostVote } from '../actions'
 
 class Post extends Component {
 
@@ -64,7 +65,7 @@ class Post extends Component {
   }
 
   onVoteChange = (voteChange) => {
-    console.log(voteChange);
+    this.props.updatePostVote({postId: this.props.post.id, option:voteChange})
   }
 
   getComments = () => {
@@ -73,7 +74,7 @@ class Post extends Component {
 
   render() {
     const { post, categories, onEditPostSubmit, uiDialogState } = this.props
-
+    
     return (
       <Panel header={Formatter.formatAuthorAndTimestamp('Posted', post.author, post.timestamp)}>
         <Grid>
@@ -93,15 +94,17 @@ class Post extends Component {
             <Col><h3>{post.title}</h3></Col>
           </Row>
           <Row><h4>{post.body}</h4></Row>
-          <VoteScore voteScore={post.voteScore} onVoteChange={this.onVoteChange} />
+          <VoteScore voteScore={post.voteScore} onVoteChange={this.onVoteChange}/>
           <Row>Number of Comments: <Badge>{post.commentCount}</Badge></Row>
         </Grid>
+        {uiDialogState.changeVoteError && uiDialogState.postId === post.id && <SubmissionAlert error={uiDialogState.changeVoteError}/>}
         <div className='comments'>
           {this.getComments()}
         </div>
 
         {uiDialogState.showPostDeleteDialog && uiDialogState.postId === post.id && <ConfirmDeletionModal
           entityType={EntityType.Post}
+          error={uiDialogState.deleteError}
           onCancel={this.onDeletePostCancel}
           onConfirm={this.onDeletePostConfirm} />}
 
@@ -139,7 +142,8 @@ const mapDispatchToProps = (dispatch) => {
     fetchPost: (postId) => { dispatch(fetchPost(postId)) },
     changePostUpdateDialogState: (dialogState) => { dispatch(changePostUpdateDialogState(dialogState)) },
     changePostDeleteDialogState: (dialogState) => { dispatch(changePostDeleteDialogState(dialogState)) },
-    deletePost: (postId) => dispatch(deletePost(postId))
+    deletePost: (postId) => dispatch(deletePost(postId)),
+    updatePostVote: (postId) => dispatch(updatePostVote(postId))
   }
 }
 

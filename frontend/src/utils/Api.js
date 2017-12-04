@@ -48,3 +48,7 @@ export const updatePost = (postData) => {
 export const deletePost = (postId) => {
   return fetch(`${HOST_AND_PORT}/posts/${postId}`, { headers, method: 'DELETE' })
 }
+
+export const updateVote = (postData) => {
+  return fetch(`${HOST_AND_PORT}/posts/${postData.postId}`, { headers, method: 'POST', body: JSON.stringify({ option: postData.option }) })
+}
