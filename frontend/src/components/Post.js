@@ -94,6 +94,7 @@ class Post extends Component {
             <Col><h3>{post.title}</h3></Col>
           </Row>
           <Row><h4>{post.body}</h4></Row>
+          <Row><h5>Category: {post.category}</h5></Row>
           <VoteScore voteScore={post.voteScore} onVoteChange={this.onVoteChange}/>
           <Row>Number of Comments: <Badge>{post.commentCount}</Badge></Row>
         </Grid>
