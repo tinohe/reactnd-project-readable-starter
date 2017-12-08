@@ -5,49 +5,37 @@ import Posts from './Posts'
 import Post from './Post'
 import { connect } from 'react-redux'
 import { fetchCategories, fetchPosts } from '../actions'
+import { PageHeader } from 'react-bootstrap'
 
 class App extends Component {
 
   componentDidMount = () => {
-    this.props.dispatch(fetchCategories())
-    this.props.dispatch(fetchPosts())
+    this.props.fetchCategories()
+    this.props.fetchPosts()
   }
 
   render() {
-    const categories = this.props.categories
-    const categoriesForRouting = [{ name: '', path: '/' }, { name: '', path: '/categories' }].concat(categories)
-
-    const posts = this.props.posts
 
     return (
       <div>
+        <PageHeader>Readable <small>A React Nanodegree Project</small></PageHeader>
+
         <Switch>
-          {categoriesForRouting.map((category) => (
-            <Route key={category.path}
-              exact path={category.name ? `/categories/${category.path}` : category.path}
-              render={() => (<Posts />)}
-            />))}
-
-          {posts.map((post) => (
-            <Route key={post.id}
-              exact path={`/posts/${post.id}`}
-              render={() => (<Post postId={post.id} />)}
-            />))}
-
-          {<Route
-            render={() => (<ErrorPage />)}
-          />}
+          <Route exact path='/' render={(props) => (<Posts {...props}/>)} />
+          <Route exact path='/:category' render={(props) => (<Posts {...props} />)} /> />
+          <Route exact path='/:category/:post_id' render={(props) => (<Post {...props}/>)} />
+          <Route render={() => (<ErrorPage />)} />
         </Switch>
       </div>
     )
   }
 }
 
-const mapStateToProps = (state) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    categories: state.categories,
-    posts: state.posts
+    fetchCategories: () => { dispatch(fetchCategories()) },
+    fetchPosts: () => { dispatch(fetchPosts()) }
   }
 }
 
-export default connect(mapStateToProps)(App)
+export default connect(null, mapDispatchToProps)(App)

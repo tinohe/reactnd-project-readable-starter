@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Button, ButtonGroup, Tooltip, OverlayTrigger, Glyphicon, } from 'react-bootstrap'
 
 import ActionType from '../utils/ActionType'

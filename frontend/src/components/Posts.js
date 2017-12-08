@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import {Link} from 'react-router-dom'
-import {Panel, PageHeader, Button, ToggleButtonGroup, Glyphicon, ToggleButton , ButtonToolbar} from 'react-bootstrap'
+import { Nav, NavItem, Panel, Button, ToggleButtonGroup, Glyphicon, ToggleButton, ButtonToolbar } from 'react-bootstrap'
 import Post from './Post'
 import EditCreateModal from './EditCreateModal'
 
@@ -8,9 +7,9 @@ import EntityType from '../utils/EntityType'
 import ActionType from '../utils/ActionType'
 
 import SortMode from '../utils/SortMode'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
-import {changePostCreateDialogState, createPost} from '../actions'
+import { changePostCreateDialogState, createPost } from '../actions'
 
 class Posts extends Component {
 
@@ -20,84 +19,82 @@ class Posts extends Component {
 
   sortPosts = (posts) => {
     if (this.state.selectedSearchMode === SortMode.timestamp) {
-      return posts.sort((a,b) => b.timestamp - a.timestamp)
+      return posts.sort((a, b) => b.timestamp - a.timestamp)
     } else {
-      return posts.sort((a,b) => b.voteScore - a.voteScore)
+      return posts.sort((a, b) => b.voteScore - a.voteScore)
     }
   }
 
   onSearchModeChanged = (value) => {
-    this.setState({selectedSearchMode: value})
+    this.setState({ selectedSearchMode: value })
   }
 
   onOpenCreatePost = () => {
-    this.props.changePostCreateDialogState({showPostDialog: true})
+    this.props.changePostCreateDialogState({ showPostDialog: true })
   }
 
   onCreatePostCancel = () => {
-    this.props.changePostCreateDialogState({showPostDialog: false})
+    this.props.changePostCreateDialogState({ showPostDialog: false })
   }
 
   onCreatePostSubmit = (postData) => {
     this.props.onPostSubmit(postData)
   }
 
-  getClassName = (activeLink, link) => {
-    return activeLink === link ? 'active' : ''
-  }
-
   render() {
-    const {posts, categories, selectedCategory, uiDialogState} = this.props
-
+    const { posts, categories, activeCategory, uiDialogState } = this.props
+    
     return (
-      <Panel>
-        <PageHeader>Readable <small>A React Nanodegree Project</small></PageHeader>
+      <div>
+        <Nav bsStyle='tabs' activeKey={activeCategory ? activeCategory : ''} >
+          <NavItem eventKey='' href='/'>All categories</NavItem>
+          {categories && categories.map(category => (
+            <NavItem key={category.path} eventKey={category.name} href={`/${category.path}`}>{category.name}</NavItem>
+          ))}
+        </Nav>
+        <Panel>
 
-        <Button bsStyle='primary' className='createPost' onClick={this.onOpenCreatePost}>
-          <Glyphicon glyph='plus' />&nbsp;&nbsp;{ActionType.Create.name} {EntityType.Post.name}
-        </Button>
+          <Button bsStyle='primary' className='createPost' onClick={this.onOpenCreatePost}>
+            <Glyphicon glyph='plus' />&nbsp;&nbsp;{ActionType.Create.name} {EntityType.Post.name}
+          </Button>
 
-        <h4>Show only Posts for Category:</h4>
-        <div className='categories settings'>
-          {categories.map((category) => (<Link className={this.getClassName(selectedCategory, category)} key={category.path} to={'/categories/' + category.path}> {category.name} </Link>))}
-        </div>
+          <h5>Sort Posts by:</h5>
+          <ButtonToolbar className='searchModes settings'>
+            <ToggleButtonGroup type='radio' name='sortMode' defaultValue={this.state.selectedSearchMode} onChange={this.onSearchModeChanged}>
+              {SortMode.enumValues.map((e) => (<ToggleButton key={e.name} value={e}>{e.name}</ToggleButton>))}
+            </ToggleButtonGroup>
+          </ButtonToolbar>
 
-        <h4>Sort Posts by:</h4>
-        <ButtonToolbar className='searchModes settings'>
-          <ToggleButtonGroup type='radio' name='sortMode' defaultValue={this.state.selectedSearchMode}  onChange={this.onSearchModeChanged}>
-            {SortMode.enumValues.map((e) => (<ToggleButton key={e.name} value={e}>{e.name}</ToggleButton>))}
-          </ToggleButtonGroup>
-        </ButtonToolbar>
+          {this.sortPosts(posts).map((post) => (<Post key={post.id} postId={post.id} />))}
 
-        {this.sortPosts(posts).map((post) => (<Post key={post.id} postId={post.id}/>))}
-
-        {uiDialogState.showPostCreateDialog && <EditCreateModal
-          actionType={ActionType.Create}
-          entityType={EntityType.Post}
-          entity={{}}
-          onCancel={this.onCreatePostCancel}
-          onSubmit={this.onCreatePostSubmit}
-          categories={categories}/>}
-      </Panel>
+          {uiDialogState.showPostCreateDialog && <EditCreateModal
+            actionType={ActionType.Create}
+            entityType={EntityType.Post}
+            entity={{}}
+            onCancel={this.onCreatePostCancel}
+            onSubmit={this.onCreatePostSubmit}
+            categories={categories} />}
+        </Panel>
+      </div>
     )
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const activeCategory = ownProps.match.params.category
 
   return {
-    // category: state.selectedCategory,
-    // posts: state.posts.filter((post) => (state.selectedCategory ? (post.category === state.selectedCategory) : true)),
-    posts: state.posts,
     categories: state.categories,
+    activeCategory: activeCategory,
+    posts: state.posts.filter((post) => (activeCategory ? (post.category === activeCategory) : true)),
     uiDialogState: state.uiDialogState
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onPostSubmit: (postData) => {dispatch(createPost(postData))},
-    changePostCreateDialogState: (dialogState) => {dispatch(changePostCreateDialogState(dialogState))}
+    onPostSubmit: (postData) => { dispatch(createPost(postData)) },
+    changePostCreateDialogState: (dialogState) => { dispatch(changePostCreateDialogState(dialogState)) }
   }
 }
 
