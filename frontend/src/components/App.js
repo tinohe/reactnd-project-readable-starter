@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import ErrorPage from './ErrorPage'
 import Posts from './Posts'
-import {connect} from 'react-redux'
-import {fetchCategories, fetchPosts} from '../actions'
+import Post from './Post'
+import { connect } from 'react-redux'
+import { fetchCategories, fetchPosts } from '../actions'
 
 class App extends Component {
 
@@ -14,7 +15,9 @@ class App extends Component {
 
   render() {
     const categories = this.props.categories
-    const categoriesForRouting = [{name: '', path:'/'}, {name: '', path: '/categories'}].concat(categories)
+    const categoriesForRouting = [{ name: '', path: '/' }, { name: '', path: '/categories' }].concat(categories)
+
+    const posts = this.props.posts
 
     return (
       <div>
@@ -22,11 +25,18 @@ class App extends Component {
           {categoriesForRouting.map((category) => (
             <Route key={category.path}
               exact path={category.name ? `/categories/${category.path}` : category.path}
-              render={() => (<Posts/>)}
+              render={() => (<Posts />)}
             />))}
-          <Route
-            render={ () => (<ErrorPage/>)}
-          />
+
+          {posts.map((post) => (
+            <Route key={post.id}
+              exact path={`/posts/${post.id}`}
+              render={() => (<Post postId={post.id} />)}
+            />))}
+
+          {<Route
+            render={() => (<ErrorPage />)}
+          />}
         </Switch>
       </div>
     )
@@ -35,7 +45,8 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    categories: state.categories
+    categories: state.categories,
+    posts: state.posts
   }
 }
 
