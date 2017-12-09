@@ -5,6 +5,10 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+.page-header a:hover {
+  text-decoration : none;
+}
+
 .settings {
   margin-bottom: 30px;
 }

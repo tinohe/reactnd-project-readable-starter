@@ -14,10 +14,15 @@ export const fetchCategories = () => {
     .then((categories) => categories.categories)
 }
 
-export const fetchPosts = () => {
-
-  return fetch(`${HOST_AND_PORT}/posts`, { headers, method: 'GET' })
-    .then((response) => response.json())
+export const fetchPosts = (category) => {
+  if (category) {
+    return fetch(`${HOST_AND_PORT}/${category}/posts`, { headers, method: 'GET' })
+      .then((response) => response.json())
+  }
+  else {
+    return fetch(`${HOST_AND_PORT}/posts`, { headers, method: 'GET' })
+      .then((response) => response.json())
+  }
 }
 
 export const fetchPost = (postId) => {

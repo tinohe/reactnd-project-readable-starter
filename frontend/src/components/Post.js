@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Panel, Grid, Row, Col, Badge, Button, ButtonGroup, Tooltip, ButtonToolbar, OverlayTrigger, Glyphicon } from 'react-bootstrap'
+import { Panel, Alert, Grid, Row, Col, Badge, Button, ButtonGroup, Tooltip, ButtonToolbar, OverlayTrigger, Glyphicon } from 'react-bootstrap'
 import * as Formatter from '../utils/Formatter'
 import * as API from '../utils/Api'
 import Comment from './Comment'
@@ -18,7 +18,7 @@ class Post extends Component {
 
   state = {
     comments: [],
-    showCreateCommentDialog: false
+    showCreateCommentDialog: false,
   }
 
   fetchCommentsForPost = (postId) => {
@@ -28,7 +28,16 @@ class Post extends Component {
   }
 
   componentDidMount = () => {
-    // this.fetchCommentsForPost(this.props.postId)
+    console.log("update check show details")
+    if (this.props.showPostDetails) {
+      console.log("show details")
+      this.props.fetchPost(this.props.postId)
+      // this.fetchCommentsForPost(this.props.postId)
+    }
+  }
+
+  onShowDetails = () => {
+    console.log('showing details')
   }
 
   onEditPostClick = () => {
@@ -42,7 +51,7 @@ class Post extends Component {
   onDeletePostClick = () => {
     this.props.changePostDeleteDialogState({ showPostDialog: true, postId: this.props.post.id })
   }
-  
+
   onDeletePostCancel = () => {
     this.props.changePostDeleteDialogState({ showPostDialog: false, postId: this.props.post.id })
   }
@@ -65,7 +74,7 @@ class Post extends Component {
   }
 
   onVoteChange = (voteChange) => {
-    this.props.updatePostVote({postId: this.props.post.id, option:voteChange})
+    this.props.updatePostVote({ postId: this.props.post.id, option: voteChange })
   }
 
   getComments = () => {
@@ -73,35 +82,49 @@ class Post extends Component {
   }
 
   render() {
-    const { post, categories, onEditPostSubmit, uiDialogState } = this.props
-    
+    const { post, categories, onEditPostSubmit, uiDialogState, showPostDetails } = this.props
+
+    if (!post) {
+      return <Alert bsStyle="info">
+        <h4>No post found!</h4>
+      </Alert>
+    }
+
     return (
       <Panel header={Formatter.formatAuthorAndTimestamp('Posted', post.author, post.timestamp)}>
         <Grid>
           <Row>
             <Col>
               <ButtonToolbar>
-                <EditDeleteButtonGroup entityType={EntityType.Post} onEditClick={this.onEditPostClick} onDeleteClick={this.onDeletePostClick} />
-                <ButtonGroup>
+                {!showPostDetails &&
+                  <OverlayTrigger placement='top' overlay={<Tooltip id='show details'>Show details</Tooltip>}>
+                    <Button href={`/${post.category}/${post.id}`}>
+                      <Glyphicon glyph='info-sign' />
+                    </Button>
+                  </OverlayTrigger>}
+                {showPostDetails && <EditDeleteButtonGroup entityType={EntityType.Post} onEditClick={this.onEditPostClick} onDeleteClick={this.onDeletePostClick} />}
+                {showPostDetails &&
                   <OverlayTrigger placement='top' overlay={<Tooltip id='create-comment'>{ActionType.Create.name} {EntityType.Comment.name}</Tooltip>}>
                     <Button onClick={this.onOpenCreateComment}>
                       <Glyphicon glyph='plus' />
                     </Button>
-                  </OverlayTrigger>
-                </ButtonGroup>
+                  </OverlayTrigger>}
+
               </ButtonToolbar>
             </Col>
             <Col><h3>{post.title}</h3></Col>
           </Row>
           <Row><h4>{post.body}</h4></Row>
           <Row><h5>Category: {post.category}</h5></Row>
-          <VoteScore voteScore={post.voteScore} onVoteChange={this.onVoteChange}/>
+          <VoteScore voteScore={post.voteScore} onVoteChange={this.onVoteChange} />
           <Row>Number of Comments: <Badge>{post.commentCount}</Badge></Row>
         </Grid>
-        {uiDialogState.changeVoteError && uiDialogState.postId === post.id && <SubmissionAlert error={uiDialogState.changeVoteError}/>}
-        <div className='comments'>
-          {this.getComments()}
-        </div>
+        {uiDialogState.changeVoteError && uiDialogState.postId === post.id && <SubmissionAlert error={uiDialogState.changeVoteError} />}
+
+        {showPostDetails &&
+          <div className='comments'>
+            {this.getComments()}
+          </div>}
 
         {uiDialogState.showPostDeleteDialog && uiDialogState.postId === post.id && <ConfirmDeletionModal
           entityType={EntityType.Post}
@@ -130,10 +153,14 @@ class Post extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const postId = ownProps.postId ? ownProps.postId : ownProps.match.params.postId
+  console.log("postId:" + postId)
   return {
     categories: state.categories,
-    post: state.posts.filter((post) => post.id === ownProps.postId)[0],
-    uiDialogState: state.uiDialogState
+    postId: postId,
+    post: state.posts.filter((post) => post.id === postId)[0],
+    uiDialogState: state.uiDialogState,
+    showPostDetails: ownProps.showPostDetails
   }
 }
 

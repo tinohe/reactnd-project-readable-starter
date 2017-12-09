@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Nav, NavItem, Panel, Button, ToggleButtonGroup, Glyphicon, ToggleButton, ButtonToolbar } from 'react-bootstrap'
+import { Alert, Nav, NavItem, Panel, Button, ToggleButtonGroup, Glyphicon, ToggleButton, ButtonToolbar } from 'react-bootstrap'
 import Post from './Post'
 import EditCreateModal from './EditCreateModal'
 
@@ -9,12 +9,18 @@ import ActionType from '../utils/ActionType'
 import SortMode from '../utils/SortMode'
 import { connect } from 'react-redux'
 
+import { fetchPosts } from '../actions'
+
 import { changePostCreateDialogState, createPost } from '../actions'
 
 class Posts extends Component {
 
   state = {
     selectedSearchMode: SortMode.voteScore,
+  }
+
+  componentDidMount = () => {
+    this.props.fetchPosts(this.props.activeCategory)
   }
 
   sortPosts = (posts) => {
@@ -41,13 +47,17 @@ class Posts extends Component {
     this.props.onPostSubmit(postData)
   }
 
+  arePostsAvailable = () => {
+    return this.props.posts.length > 0
+  }
+
   render() {
     const { posts, categories, activeCategory, uiDialogState } = this.props
-    
+
     return (
       <div>
         <Nav bsStyle='tabs' activeKey={activeCategory ? activeCategory : ''} >
-          <NavItem eventKey='' href='/'>All categories</NavItem>
+          <NavItem eventKey='' href='/'><Glyphicon glyph='home' /></NavItem>
           {categories && categories.map(category => (
             <NavItem key={category.path} eventKey={category.name} href={`/${category.path}`}>{category.name}</NavItem>
           ))}
@@ -58,14 +68,24 @@ class Posts extends Component {
             <Glyphicon glyph='plus' />&nbsp;&nbsp;{ActionType.Create.name} {EntityType.Post.name}
           </Button>
 
-          <h5>Sort Posts by:</h5>
-          <ButtonToolbar className='searchModes settings'>
-            <ToggleButtonGroup type='radio' name='sortMode' defaultValue={this.state.selectedSearchMode} onChange={this.onSearchModeChanged}>
-              {SortMode.enumValues.map((e) => (<ToggleButton key={e.name} value={e}>{e.name}</ToggleButton>))}
-            </ToggleButtonGroup>
-          </ButtonToolbar>
+          {this.arePostsAvailable() &&
+            <div>
+              <h5>Sort Posts by:</h5>
+              <ButtonToolbar className='searchModes settings'>
+                <ToggleButtonGroup type='radio' name='sortMode' defaultValue={this.state.selectedSearchMode} onChange={this.onSearchModeChanged}>
+                  {SortMode.enumValues.map((e) => (<ToggleButton key={e.name} value={e}>{e.name}</ToggleButton>))}
+                </ToggleButtonGroup>
+              </ButtonToolbar>
+            </div>
+          }
 
-          {this.sortPosts(posts).map((post) => (<Post key={post.id} postId={post.id} />))}
+          {!this.arePostsAvailable() &&
+            <Alert bsStyle="info">
+              <h4>No posts found!</h4>
+            </Alert>
+          }
+
+          {this.sortPosts(posts).map((post) => (<Post key={post.id} postId={post.id} showPostDetails={false} />))}
 
           {uiDialogState.showPostCreateDialog && <EditCreateModal
             actionType={ActionType.Create}
@@ -94,7 +114,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onPostSubmit: (postData) => { dispatch(createPost(postData)) },
-    changePostCreateDialogState: (dialogState) => { dispatch(changePostCreateDialogState(dialogState)) }
+    changePostCreateDialogState: (dialogState) => { dispatch(changePostCreateDialogState(dialogState)) },
+    fetchPosts: (category) => { dispatch(fetchPosts(category)) }
   }
 }
 

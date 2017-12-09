@@ -69,8 +69,8 @@ export const fetchCategories = () => dispatch => (
     ))
 )
 
-export const fetchPosts = () => dispatch => (
-  API.fetchPosts()
+export const fetchPosts = (category) => dispatch => (
+  API.fetchPosts(category)
     .then((posts) => dispatch(
       {
         type: FETCH_POSTS,
