@@ -31,7 +31,7 @@ export const fetchPost = (postId) => {
     .then((response) => response.json())
 }
 
-export const fetchCommentForPost = (postId) => {
+export const fetchComments = (postId) => {
 
   return fetch(`${HOST_AND_PORT}/posts/${postId}/comments`, { headers, method: 'GET' })
     .then((response) => response.json())

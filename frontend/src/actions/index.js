@@ -14,6 +14,7 @@ export const DEC_COMMENT_VOTE = 'DEC_COMMENT_VOTE'
 export const FETCH_CATEGORIES = 'FETCH_CATEGORIES'
 export const FETCH_POSTS = 'FETCH_POSTS'
 export const FETCH_POST = 'FETCH_POST'
+export const FETCH_COMMENTS = 'FETCH_COMMENTS'
 
 export const CHANGE_POST_CREATE_DIALOG_STATE = 'CHANGE_POST_CREATE_DIALOG_STATE'
 export const CHANGE_POST_UPDATE_DIALOG_STATE = 'CHANGE_POST_UPDATE_DIALOG_STATE'
@@ -166,6 +167,16 @@ export const updatePostVote = (postData) => dispatch => {
       }
     ))
 }
+
+export const fetchComments = (postId) => dispatch => (
+  API.fetchComments(postId)
+    .then((comments) => dispatch(
+      {
+        type: FETCH_COMMENTS,
+        comments
+      }
+    ))
+)
 
 export const createComment = ({ id, postId, body, author }) => {
   return {

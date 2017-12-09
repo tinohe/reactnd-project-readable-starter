@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { Panel, Alert, Grid, Row, Col, Badge, Button, ButtonGroup, Tooltip, ButtonToolbar, OverlayTrigger, Glyphicon } from 'react-bootstrap'
+import { Panel, Alert, Grid, Row, Col, Badge, Button, Tooltip, ButtonToolbar, OverlayTrigger, Glyphicon } from 'react-bootstrap'
 import * as Formatter from '../utils/Formatter'
-import * as API from '../utils/Api'
 import Comment from './Comment'
 import VoteScore from './VoteScore'
 import EditDeleteButtonGroup from './EditDeleteButtonGroup'
@@ -12,7 +11,7 @@ import { connect } from 'react-redux'
 import ConfirmDeletionModal from './ConfirmDeletionModal'
 import SubmissionAlert from './SubmissionAlert'
 
-import { updatePost, fetchPost, changePostUpdateDialogState, deletePost, changePostDeleteDialogState, updatePostVote } from '../actions'
+import { updatePost, fetchPost, fetchComments, changePostUpdateDialogState, deletePost, changePostDeleteDialogState, updatePostVote } from '../actions'
 
 class Post extends Component {
 
@@ -21,23 +20,11 @@ class Post extends Component {
     showCreateCommentDialog: false,
   }
 
-  fetchCommentsForPost = (postId) => {
-    API.fetchCommentForPost(postId)
-      .then((comments) => comments.sort((a, b) => b.voteScore - a.voteScore))
-      .then((comments) => this.setState({ comments: comments }))
-  }
-
   componentDidMount = () => {
-    console.log("update check show details")
     if (this.props.showPostDetails) {
-      console.log("show details")
       this.props.fetchPost(this.props.postId)
-      // this.fetchCommentsForPost(this.props.postId)
+      this.props.fetchComments(this.props.postId)
     }
-  }
-
-  onShowDetails = () => {
-    console.log('showing details')
   }
 
   onEditPostClick = () => {
@@ -77,8 +64,8 @@ class Post extends Component {
     this.props.updatePostVote({ postId: this.props.post.id, option: voteChange })
   }
 
-  getComments = () => {
-    return this.state.comments.map((comment) => <Comment key={comment.id} comment={comment} />)
+  createComments = () => {
+    return this.props.comments.map((comment) => <Comment key={comment.id} comment={comment} />)
   }
 
   render() {
@@ -123,7 +110,7 @@ class Post extends Component {
 
         {showPostDetails &&
           <div className='comments'>
-            {this.getComments()}
+            {this.createComments()}
           </div>}
 
         {uiDialogState.showPostDeleteDialog && uiDialogState.postId === post.id && <ConfirmDeletionModal
@@ -154,11 +141,11 @@ class Post extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const postId = ownProps.postId ? ownProps.postId : ownProps.match.params.postId
-  console.log("postId:" + postId)
   return {
     categories: state.categories,
     postId: postId,
     post: state.posts.filter((post) => post.id === postId)[0],
+    comments: state.comments.sort((a, b) => b.voteScore - a.voteScore),
     uiDialogState: state.uiDialogState,
     showPostDetails: ownProps.showPostDetails
   }
@@ -168,6 +155,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onEditPostSubmit: (postData) => { dispatch(updatePost(postData)) },
     fetchPost: (postId) => { dispatch(fetchPost(postId)) },
+    fetchComments: (postId) => { dispatch(fetchComments(postId)) },
     changePostUpdateDialogState: (dialogState) => { dispatch(changePostUpdateDialogState(dialogState)) },
     changePostDeleteDialogState: (dialogState) => { dispatch(changePostDeleteDialogState(dialogState)) },
     deletePost: (postId) => dispatch(deletePost(postId)),

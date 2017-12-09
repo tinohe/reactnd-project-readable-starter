@@ -16,7 +16,8 @@ import {
   CHANGE_POST_UPDATE_DIALOG_STATE,
   CHANGE_POST_DELETE_DIALOG_STATE,
   CHANGE_POST_VOTE_STATE,
-  UPDATE_COMMENT_DIALOG_STATE
+  UPDATE_COMMENT_DIALOG_STATE,
+  FETCH_COMMENTS
 } from '../actions'
 
 import { VoteScore, KEY_INC, KEY_DEC } from '../components/VoteScore'
@@ -62,7 +63,7 @@ const posts = (state = [], action) => {
   switch (action.type) {
 
     case FETCH_POSTS: {
-      return state.concat(action.posts)
+      return [].concat(action.posts)
     }
     case FETCH_POST: {
       return [].concat(action.post)
@@ -114,8 +115,23 @@ const posts = (state = [], action) => {
   }
 }
 
+const comments = (state = [], action) => {
+  
+  switch (action.type) {
+
+    case FETCH_COMMENTS: {
+      return state.concat(action.comments)
+    }
+    default: {
+      return state
+    }
+  }
+  return state
+}
+
 export const rootReducer = combineReducers({
   uiDialogState,
   categories,
   posts,
+  comments
 })
