@@ -9,6 +9,10 @@ body {
   text-decoration : none;
 }
 
+.glyphicon-info-sign
+ {
+   color: #337ab7;
+ }
 .settings {
   margin-bottom: 30px;
 }
