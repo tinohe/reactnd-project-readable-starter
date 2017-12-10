@@ -74,29 +74,27 @@ class Post extends Component {
     }
 
     return (
-      <Panel header={Formatter.formatAuthorAndTimestamp('Posted', post.author, post.timestamp)}>
+      <Panel bsStyle="primary" header={Formatter.formatAuthorAndTimestamp('Posted', post.author, post.timestamp)}>
         <Grid>
           <Row>
-            <Col>
-              <ButtonToolbar>
-                {!showPostDetails &&
-                  <OverlayTrigger placement='top' overlay={<Tooltip id='show details'>Show details</Tooltip>}>
-                    <Button href={`/${post.category}/${post.id}`}>
-                      <Glyphicon glyph='info-sign' />
-                    </Button>
-                  </OverlayTrigger>}
-                {showPostDetails && <EditDeleteButtonGroup entityType={EntityType.Post} onEditClick={this.onEditPostClick} onDeleteClick={this.onDeletePostClick} />}
-                {showPostDetails &&
-                  <OverlayTrigger placement='top' overlay={<Tooltip id='create-comment'>{ActionType.Create.name} {EntityType.Comment.name}</Tooltip>}>
-                    <Button onClick={this.onOpenCreateComment}>
-                      <Glyphicon glyph='plus' />
-                    </Button>
-                  </OverlayTrigger>}
+            <ButtonToolbar>
+              {!showPostDetails &&
+                <OverlayTrigger placement='top' overlay={<Tooltip id='show details'>Show details</Tooltip>}>
+                  <Button href={`/${post.category}/${post.id}`}>
+                    <Glyphicon glyph='info-sign' />
+                  </Button>
+                </OverlayTrigger>}
+              {showPostDetails && <EditDeleteButtonGroup entityType={EntityType.Post} onEditClick={this.onEditPostClick} onDeleteClick={this.onDeletePostClick} />}
+              {showPostDetails &&
+                <OverlayTrigger placement='top' overlay={<Tooltip id='create-comment'>{ActionType.Create.name} {EntityType.Comment.name}</Tooltip>}>
+                  <Button onClick={this.onOpenCreateComment}>
+                    <Glyphicon glyph='plus' />
+                  </Button>
+                </OverlayTrigger>}
 
-              </ButtonToolbar>
-            </Col>
-            <Col><h3>{post.title}</h3></Col>
+            </ButtonToolbar>
           </Row>
+          <Row><h3>{post.title}</h3></Row>
           <Row><h4>{post.body}</h4></Row>
           <Row><h5>Category: {post.category}</h5></Row>
           <VoteScore voteScore={post.voteScore} onVoteChange={this.onVoteChange} />
@@ -118,7 +116,7 @@ class Post extends Component {
         {uiDialogState.showCommentCreateDialog && <EditCreateModal
           actionType={ActionType.Create}
           entityType={EntityType.Comment}
-          entity={{parentId: post.id}}
+          entity={{ parentId: post.id }}
           onCancel={this.onCreateCommentCancel}
           onSubmit={this.onCreateCommentSubmit} />}
 
