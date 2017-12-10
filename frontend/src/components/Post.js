@@ -84,7 +84,7 @@ class Post extends Component {
                     <Glyphicon glyph='info-sign' />
                   </Button>
                 </OverlayTrigger>}
-              {showPostDetails && <EditDeleteButtonGroup entityType={EntityType.Post} onEditClick={this.onEditPostClick} onDeleteClick={this.onDeletePostClick} />}
+              <EditDeleteButtonGroup entityType={EntityType.Post} onEditClick={this.onEditPostClick} onDeleteClick={this.onDeletePostClick} />
               {showPostDetails &&
                 <OverlayTrigger placement='top' overlay={<Tooltip id='create-comment'>{ActionType.Create.name} {EntityType.Comment.name}</Tooltip>}>
                   <Button onClick={this.onOpenCreateComment}>
