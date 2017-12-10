@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
-import ErrorPage from './ErrorPage'
 import Posts from './Posts'
 import Post from './Post'
 import { connect } from 'react-redux'
@@ -23,7 +22,6 @@ class App extends Component {
           <Route exact path='/' render={(props) => (<Posts {...props}/>)} />
           <Route exact path='/:category' render={(props) => (<Posts {...props} />)} /> />
           <Route exact path='/:category/:postId' render={(props) => (<Post {...props} showPostDetails={true}/>)} />
-          <Route render={() => (<ErrorPage />)} />
         </Switch>
       </div>
     )
