@@ -11,7 +11,7 @@ To get started reviewing right away:
 * Install and start the API server
   * cd api-server
   * npm install
-  * node server
+  * npm start
 
 * Install and start the frontend server
   * cd frontend
