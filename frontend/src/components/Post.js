@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Panel, Alert, Grid, Row, Col, Badge, Button, Tooltip, ButtonToolbar, OverlayTrigger, Glyphicon } from 'react-bootstrap'
+import { Panel, Alert, Grid, Row, Badge, Button, Tooltip, ButtonToolbar, OverlayTrigger, Glyphicon } from 'react-bootstrap'
 import * as Formatter from '../utils/Formatter'
 import Comment from './Comment'
 import VoteScore from './VoteScore'
