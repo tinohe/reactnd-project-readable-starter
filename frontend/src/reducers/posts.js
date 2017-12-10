@@ -48,7 +48,7 @@ export const posts = (state = [], action) => {
     case UPDATE_POST_VOTE: {
 
       if (action.postData.success) {
-        const postToChange = Object.assign({}, state.find((post) => (post.id === action.postData.postId)))
+        const postToChange = { ...state.find((post) => (post.id === action.postData.postId))}
         const newState = state.filter((post) => (post.id !== action.postData.postId))
         if (action.postData.option === KEY_INC) {
           postToChange.voteScore = postToChange.voteScore + 1
@@ -64,10 +64,12 @@ export const posts = (state = [], action) => {
     }
     case CREATE_COMMENT: {
       if (action.comment) {
-        const postToChange = Object.assign({}, state.find((post) => (post.id === action.comment.parentId)))
-        const newState = state.filter((post) => (post.id !== action.comment.parentId))
-        postToChange.commentCount = postToChange.commentCount + 1
-        return newState.concat(postToChange)
+        return state.map((post) => {
+          if (post.id === action.comment.parentId) {
+            post.commentCount = post.commentCount + 1
+          }
+          return post;
+        })
       }
       else {
         return state
@@ -75,10 +77,12 @@ export const posts = (state = [], action) => {
     }
     case DELETE_COMMENT: {
       if (action.commentData.deleted) {
-        const postToChange = Object.assign({}, state.find((post) => (post.id === action.commentData.parentId)))
-        const newState = state.filter((post) => (post.id !== action.commentData.parentId))
-        postToChange.commentCount = postToChange.commentCount - 1
-        return newState.concat(postToChange)
+        return state.map((post) => {
+          if (post.id === action.commentData.parentId) {
+            post.commentCount = post.commentCount - 1
+          }
+          return post;
+        })
       }
       else {
         return state

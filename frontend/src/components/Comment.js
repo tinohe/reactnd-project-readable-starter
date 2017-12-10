@@ -70,9 +70,6 @@ class Comment extends Component {
           onConfirm={this.onDeleteCommentConfirm} />}
 
       </Panel>
-
-
-
     )
   }
 }

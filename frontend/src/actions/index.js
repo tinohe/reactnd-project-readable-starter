@@ -184,10 +184,10 @@ export const updatePostVote = (postData) => dispatch => {
     .then((response) => {
       if (response.ok) {
         dispatch(changePostVoteState({ postId: postData.postId, error: null }))
-        return Object.assign({}, postData, { success: true })
+        return { ...postData, success: true }
       } else {
         dispatch(changePostVoteState({ postId: postData.postId, error: `error-code: ${response.status} (${response.statusText})` }))
-        return Object.assign({}, postData, { success: false })
+        return { ...postData, success: false }
       }
     })
     .then((result) => dispatch(
@@ -277,10 +277,10 @@ export const updateCommentVote = (commentData) => dispatch => {
     .then((response) => {
       if (response.ok) {
         dispatch(changeCommentVoteState({ commentId: commentData.commentId, error: null }))
-        return Object.assign({}, commentData, { success: true })
+        return { ...commentData, success: true }
       } else {
         dispatch(changeCommentVoteState({ commentId: commentData.commentId, error: `error-code: ${response.status} (${response.statusText})` }))
-        return Object.assign({}, commentData, { success: false })
+        return { ...commentData, success: false }
       }
     })
     .then((result) => dispatch(

@@ -41,7 +41,7 @@ export const comments = (state = [], action) => {
     case UPDATE_COMMENT_VOTE: {
 
       if (action.commentData.success) {
-        const commmentToChange = Object.assign({}, state.find((comment) => (comment.id === action.commentData.commentId)))
+        const commmentToChange = {...state.find((comment) => (comment.id === action.commentData.commentId))}
         const newState = state.filter((comment) => (comment.id !== action.commentData.commentId))
         if (action.commentData.option === KEY_INC) {
           commmentToChange.voteScore = commmentToChange.voteScore + 1

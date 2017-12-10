@@ -33,7 +33,7 @@ class EditCreateModal extends Component {
   handleInputChange(event) {
     const name = event.target.name
     const value = event.target.value
-    const isValid = this.areAllInputsValid(Object.assign({}, this.state.entityData, { [name]: value }))
+    const isValid = this.areAllInputsValid({...this.state.entityData,  [name]: value })
 
     this.setState((prevState) => {
       return {

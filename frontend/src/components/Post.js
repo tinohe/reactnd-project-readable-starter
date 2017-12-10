@@ -46,7 +46,6 @@ class Post extends Component {
     this.props.updatePostVote({ postId: this.props.post.id, option: voteChange })
   }
 
-
   onOpenCreateComment = () => {
     this.props.changeCommentCreateDialogState({ showCommentDialog: true })
   }
