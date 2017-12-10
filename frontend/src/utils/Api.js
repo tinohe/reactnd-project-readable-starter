@@ -39,7 +39,18 @@ export const fetchComments = (postId) => {
 
 export const createComment = (commentData) => {
   return fetch(`${HOST_AND_PORT}/comments`, { headers, method: 'POST', body: JSON.stringify(commentData) })
-    .then((response) => response.json())
+}
+
+export const updateComment = (commentData) => {
+  return fetch(`${HOST_AND_PORT}/comments/${commentData.id}`, { headers, method: 'PUT', body: JSON.stringify({ body: commentData.body }) })
+}
+
+export const updateCommentVote = (commentData) => {
+  return fetch(`${HOST_AND_PORT}/comments/${commentData.commentId}`, { headers, method: 'POST', body: JSON.stringify({ option: commentData.option }) })
+}
+
+export const deleteComment = (commentId) => {
+  return fetch(`${HOST_AND_PORT}/comments/${commentId}`, { headers, method: 'DELETE' })
 }
 
 export const createPost = (postData) => {
@@ -54,6 +65,6 @@ export const deletePost = (postId) => {
   return fetch(`${HOST_AND_PORT}/posts/${postId}`, { headers, method: 'DELETE' })
 }
 
-export const updateVote = (postData) => {
+export const updatePostVote = (postData) => {
   return fetch(`${HOST_AND_PORT}/posts/${postData.postId}`, { headers, method: 'POST', body: JSON.stringify({ option: postData.option }) })
 }

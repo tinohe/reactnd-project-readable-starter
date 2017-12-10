@@ -11,14 +11,9 @@ import { connect } from 'react-redux'
 import ConfirmDeletionModal from './ConfirmDeletionModal'
 import SubmissionAlert from './SubmissionAlert'
 
-import { updatePost, fetchPost, fetchComments, changePostUpdateDialogState, deletePost, changePostDeleteDialogState, updatePostVote } from '../actions'
+import { createComment, changeCommentCreateDialogState, updatePost, fetchPost, fetchComments, changePostUpdateDialogState, deletePost, changePostDeleteDialogState, updatePostVote } from '../actions'
 
 class Post extends Component {
-
-  state = {
-    comments: [],
-    showCreateCommentDialog: false,
-  }
 
   componentDidMount = () => {
     if (this.props.showPostDetails) {
@@ -47,22 +42,23 @@ class Post extends Component {
     this.props.deletePost(this.props.post.id)
     this.setState({ showConfirmDeletePost: false })
   }
-
-  onOpenCreateComment = () => {
-    this.setState({ showCreateCommentDialog: true })
-  }
-
-  onCreateCommentCancel = () => {
-    this.setState({ showCreateCommentDialog: false })
-  }
-
-  onCreateCommentSubmit = () => {
-    this.setState({ showCreateCommentDialog: false })
-  }
-
   onVoteChange = (voteChange) => {
     this.props.updatePostVote({ postId: this.props.post.id, option: voteChange })
   }
+
+
+  onOpenCreateComment = () => {
+    this.props.changeCommentCreateDialogState({ showCommentDialog: true })
+  }
+
+  onCreateCommentCancel = () => {
+    this.props.changeCommentCreateDialogState({ showCommentDialog: false })
+  }
+
+  onCreateCommentSubmit = (commentData) => {
+    this.props.onCommentSubmit(commentData)
+  }
+
 
   createComments = () => {
     return this.props.comments.map((comment) => <Comment key={comment.id} comment={comment} />)
@@ -119,10 +115,10 @@ class Post extends Component {
           onCancel={this.onDeletePostCancel}
           onConfirm={this.onDeletePostConfirm} />}
 
-        {this.state.showCreateCommentDialog && <EditCreateModal
+        {uiDialogState.showCommentCreateDialog && <EditCreateModal
           actionType={ActionType.Create}
           entityType={EntityType.Comment}
-          entity={{}}
+          entity={{parentId: post.id}}
           onCancel={this.onCreateCommentCancel}
           onSubmit={this.onCreateCommentSubmit} />}
 
@@ -159,7 +155,9 @@ const mapDispatchToProps = (dispatch) => {
     changePostUpdateDialogState: (dialogState) => { dispatch(changePostUpdateDialogState(dialogState)) },
     changePostDeleteDialogState: (dialogState) => { dispatch(changePostDeleteDialogState(dialogState)) },
     deletePost: (postId) => dispatch(deletePost(postId)),
-    updatePostVote: (postId) => dispatch(updatePostVote(postId))
+    updatePostVote: (postId) => dispatch(updatePostVote(postId)),
+    onCommentSubmit: (commentData) => { dispatch(createComment(commentData)) },
+    changeCommentCreateDialogState: (dialogState) => { dispatch(changeCommentCreateDialogState(dialogState)) },
   }
 }
 

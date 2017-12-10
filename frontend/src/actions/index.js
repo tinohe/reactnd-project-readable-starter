@@ -7,9 +7,9 @@ export const DELETE_POST = 'DELETE_POST'
 export const UPDATE_POST_VOTE = 'UPDATE_POST_VOTE'
 
 export const CREATE_COMMENT = 'CREATE_COMMENT'
+export const UPDATE_COMMENT = 'UPDATE_COMMENT'
 export const DELETE_COMMENT = 'DELETE_COMMENT'
-export const INC_COMMENT_VOTE = 'INC_COMMENT_VOTE'
-export const DEC_COMMENT_VOTE = 'DEC_COMMENT_VOTE'
+export const UPDATE_COMMENT_VOTE = 'UPDATE_COMMENT_VOTE'
 
 export const FETCH_CATEGORIES = 'FETCH_CATEGORIES'
 export const FETCH_POSTS = 'FETCH_POSTS'
@@ -21,8 +21,10 @@ export const CHANGE_POST_UPDATE_DIALOG_STATE = 'CHANGE_POST_UPDATE_DIALOG_STATE'
 export const CHANGE_POST_DELETE_DIALOG_STATE = 'CHANGE_POST_DELETE_DIALOG_STATE'
 export const CHANGE_POST_VOTE_STATE = 'CHANGE_POST_VOTE_STATE'
 
-
-export const UPDATE_COMMENT_DIALOG_STATE = 'UPDATE_COMMENT_DIALOG_STATE'
+export const CHANGE_COMMENT_CREATE_DIALOG_STATE = 'CHANGE_COMMENT_CREATE_DIALOG_STATE'
+export const CHANGE_COMMENT_UPDATE_DIALOG_STATE = 'CHANGE_COMMENT_UPDATE_DIALOG_STATE'
+export const CHANGE_COMMENT_DELETE_DIALOG_STATE = 'CHANGE_COMMENT_DELETE_DIALOG_STATE'
+export const CHANGE_COMMENT_VOTE_STATE = 'CHANGE_COMMENT_VOTE_STATE'
 
 
 export const changePostCreateDialogState = (dialogState) => {
@@ -53,10 +55,31 @@ export const changePostVoteState = (state) => {
   }
 }
 
-export const updateCommentDialogState = (dialogState) => {
+export const changeCommentCreateDialogState = (dialogState) => {
   return {
-    type: UPDATE_COMMENT_DIALOG_STATE,
+    type: CHANGE_COMMENT_CREATE_DIALOG_STATE,
     dialogState
+  }
+}
+
+export const changeCommentUpdateDialogState = (dialogState) => {
+  return {
+    type: CHANGE_COMMENT_UPDATE_DIALOG_STATE,
+    dialogState
+  }
+}
+
+export const changeCommentDeleteDialogState = (dialogState) => {
+  return {
+    type: CHANGE_COMMENT_DELETE_DIALOG_STATE,
+    dialogState
+  }
+}
+
+export const changeCommentVoteState = (state) => {
+  return {
+    type: CHANGE_COMMENT_VOTE_STATE,
+    state
   }
 }
 
@@ -93,6 +116,7 @@ export const fetchPost = (postId) => dispatch => (
 export const createPost = (postData) => dispatch => {
   postData.timestamp = Date.now()
   postData.id = UUID.create()
+  console.log(postData)
 
   API.createPost(postData)
     .then((response) => {
@@ -109,6 +133,8 @@ export const createPost = (postData) => dispatch => {
         post
       }
     ))
+    .catch((err) => dispatch(changePostCreateDialogState({ showPostDialog: true, error: `error-code: ${err}` }))
+    )
 }
 
 export const updatePost = (postData) => dispatch => {
@@ -128,6 +154,7 @@ export const updatePost = (postData) => dispatch => {
         post
       }
     ))
+    .catch((err) => dispatch(changePostUpdateDialogState({ showPostDialog: true, error: `error-code: ${err}` })))
 }
 
 export const deletePost = (postId) => dispatch => {
@@ -138,7 +165,7 @@ export const deletePost = (postId) => dispatch => {
         return response.json();
       } else {
         dispatch(changePostDeleteDialogState({ postId: postId, showPostDialog: true, error: `error-code: ${response.status} (${response.statusText})` }))
-        return {deleted: false}
+        return { deleted: false }
       }
     })
     .then((result) => dispatch(
@@ -147,17 +174,18 @@ export const deletePost = (postId) => dispatch => {
         postData: result
       }
     ))
+    .catch((err) =>dispatch(changePostDeleteDialogState({ showPostDialog: true, error: `error-code: ${err}` })))
 }
 
 export const updatePostVote = (postData) => dispatch => {
-  API.updateVote(postData)
+  API.updatePostVote(postData)
     .then((response) => {
       if (response.ok) {
         dispatch(changePostVoteState({ postId: postData.postId, error: null }))
-        return Object.assign({}, postData, {success: true})
+        return Object.assign({}, postData, { success: true })
       } else {
         dispatch(changePostVoteState({ postId: postData.postId, error: `error-code: ${response.status} (${response.statusText})` }))
-        return Object.assign({}, postData, {success: false})
+        return Object.assign({}, postData, { success: false })
       }
     })
     .then((result) => dispatch(
@@ -166,6 +194,7 @@ export const updatePostVote = (postData) => dispatch => {
         postData: result
       }
     ))
+    .catch((err) =>dispatch(changePostVoteState({ postId: postData.postId, error: `error-code: ${err}` })))
 }
 
 export const fetchComments = (postId) => dispatch => (
@@ -178,33 +207,87 @@ export const fetchComments = (postId) => dispatch => (
     ))
 )
 
-export const createComment = ({ id, postId, body, author }) => {
-  return {
-    type: CREATE_POST,
-    id,
-    postId,
-    body,
-    author,
-  }
+export const createComment = (commentData) => dispatch => {
+  commentData.timestamp = Date.now()
+  commentData.id = UUID.create()
+
+  API.createComment(commentData)
+    .then((response) => {
+      if (response.ok) {
+        dispatch(changeCommentCreateDialogState({ showCommentDialog: false }))
+        return response.json();
+      } else {
+        dispatch(changeCommentCreateDialogState({ showCommentDialog: true, error: `error-code: ${response.status} (${response.statusText})` }))
+      }
+    })
+    .then((comment) => dispatch(
+      {
+        type: CREATE_COMMENT,
+        comment
+      }
+    ))
+    .catch((err) =>dispatch(changeCommentCreateDialogState({ showCommentDialog: true, error: `error-code: ${err}` })))
 }
 
-export const deleteComment = (commentId) => {
-  return {
-    type: DELETE_COMMENT,
-    commentId
-  }
+export const updateComment = (commentData) => dispatch => {
+
+  API.updateComment(commentData)
+    .then((response) => {
+      if (response.ok) {
+        dispatch(changeCommentUpdateDialogState({ commentId: commentData.id, showPostDialog: false }))
+        return response.json();
+      } else {
+        dispatch(changeCommentUpdateDialogState({ commentId: commentData.id, showPostDialog: true, error: `error-code: ${response.status} (${response.statusText})` }))
+      }
+    })
+    .then((comment) => dispatch(
+      {
+        type: UPDATE_COMMENT,
+        comment
+      }
+    ))
+    .catch((err) =>dispatch(changeCommentUpdateDialogState({ showCommentDialog: true, error: `error-code: ${err}` })))
 }
 
-export const incCommentVote = (commentId) => {
-  return {
-    type: INC_COMMENT_VOTE,
-    commentId
-  }
+
+export const deleteComment = (commentId) => dispatch => {
+  API.deleteComment(commentId)
+    .then((response) => {
+      if (response.ok) {
+        dispatch(changeCommentDeleteDialogState({ commentId: commentId, showCommentDialog: false }))
+        return response.json();
+      } else {
+        dispatch(changeCommentDeleteDialogState({ commentId: commentId, showCommentDialog: true, error: `error-code: ${response.status} (${response.statusText})` }))
+        return { deleted: false }
+      }
+    })
+    .then((result) => dispatch(
+      {
+        type: DELETE_COMMENT,
+        commentData: result
+      }
+    ))
+    .catch((err) =>dispatch(changeCommentDeleteDialogState({ showCommentDialog: true, error: `error-code: ${err}` })))
 }
 
-export const decCommentVote = (commentId) => {
-  return {
-    type: DEC_COMMENT_VOTE,
-    commentId
-  }
+export const updateCommentVote = (commentData) => dispatch => {
+  API.updateCommentVote(commentData)
+    .then((response) => {
+      if (response.ok) {
+        dispatch(changeCommentVoteState({ commentId: commentData.commentId, error: null }))
+        return Object.assign({}, commentData, { success: true })
+      } else {
+        dispatch(changeCommentVoteState({ commentId: commentData.commentId, error: `error-code: ${response.status} (${response.statusText})` }))
+        return Object.assign({}, commentData, { success: false })
+      }
+    })
+    .then((result) => dispatch(
+      {
+        type: UPDATE_COMMENT_VOTE,
+        commentData: result
+      }
+    ))
+    .catch((err) =>dispatch(changeCommentVoteState({ commentId: commentData.commentId, error: `error-code: ${err}` })))
 }
+
+

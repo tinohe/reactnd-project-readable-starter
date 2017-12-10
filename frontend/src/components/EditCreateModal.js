@@ -17,10 +17,11 @@ class EditCreateModal extends Component {
     this.state = {
       showValidationAlert: false,
       entityData: {
+        parentId: props.entity.parentId,
         id: props.entity.id,
         title: props.entity.title,
         body: props.entity.body,
-        category: props.entity.category ? props.entity.category : (props.categories ? props.categories[0].name : null),
+        category: props.entity.category ? props.entity.category : (props.categories.length > 0 ? props.categories[0].name : null),
         author: props.entity.author
       }
     }
