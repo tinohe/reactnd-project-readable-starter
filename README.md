@@ -16,6 +16,6 @@ To get started reviewing right away:
 * Install and start the frontend server
   * cd frontend
   * npm install
-  * yarn start
+  * npm start
 
 This project was forked from [GitHub](https://github.com/udacity/reactnd-project-readable-starter).
