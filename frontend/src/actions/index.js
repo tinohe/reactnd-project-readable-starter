@@ -85,6 +85,8 @@ export const changeCommentVoteState = (state) => {
 
 export const fetchCategories = () => dispatch => (
   API.fetchCategories()
+    .then((response) => (response.json()))
+    .then((json) => (json.categories))
     .then((categories) => dispatch(
       {
         type: FETCH_CATEGORIES,
@@ -95,6 +97,7 @@ export const fetchCategories = () => dispatch => (
 
 export const fetchPosts = (category) => dispatch => (
   API.fetchPosts(category)
+    .then((response) => (response.json()))
     .then((posts) => dispatch(
       {
         type: FETCH_POSTS,
@@ -116,7 +119,6 @@ export const fetchPost = (postId) => dispatch => (
 export const createPost = (postData) => dispatch => {
   postData.timestamp = Date.now()
   postData.id = UUID.create()
-  console.log(postData)
 
   API.createPost(postData)
     .then((response) => {
@@ -174,7 +176,7 @@ export const deletePost = (postId) => dispatch => {
         postData: result
       }
     ))
-    .catch((err) =>dispatch(changePostDeleteDialogState({ showPostDialog: true, error: `error-code: ${err}` })))
+    .catch((err) => dispatch(changePostDeleteDialogState({ showPostDialog: true, error: `error-code: ${err}` })))
 }
 
 export const updatePostVote = (postData) => dispatch => {
@@ -194,7 +196,7 @@ export const updatePostVote = (postData) => dispatch => {
         postData: result
       }
     ))
-    .catch((err) =>dispatch(changePostVoteState({ postId: postData.postId, error: `error-code: ${err}` })))
+    .catch((err) => dispatch(changePostVoteState({ postId: postData.postId, error: `error-code: ${err}` })))
 }
 
 export const fetchComments = (postId) => dispatch => (
@@ -226,7 +228,7 @@ export const createComment = (commentData) => dispatch => {
         comment
       }
     ))
-    .catch((err) =>dispatch(changeCommentCreateDialogState({ showCommentDialog: true, error: `error-code: ${err}` })))
+    .catch((err) => dispatch(changeCommentCreateDialogState({ showCommentDialog: true, error: `error-code: ${err}` })))
 }
 
 export const updateComment = (commentData) => dispatch => {
@@ -246,7 +248,7 @@ export const updateComment = (commentData) => dispatch => {
         comment
       }
     ))
-    .catch((err) =>dispatch(changeCommentUpdateDialogState({ showCommentDialog: true, error: `error-code: ${err}` })))
+    .catch((err) => dispatch(changeCommentUpdateDialogState({ showCommentDialog: true, error: `error-code: ${err}` })))
 }
 
 
@@ -267,7 +269,7 @@ export const deleteComment = (commentId) => dispatch => {
         commentData: result
       }
     ))
-    .catch((err) =>dispatch(changeCommentDeleteDialogState({ showCommentDialog: true, error: `error-code: ${err}` })))
+    .catch((err) => dispatch(changeCommentDeleteDialogState({ showCommentDialog: true, error: `error-code: ${err}` })))
 }
 
 export const updateCommentVote = (commentData) => dispatch => {
@@ -287,7 +289,7 @@ export const updateCommentVote = (commentData) => dispatch => {
         commentData: result
       }
     ))
-    .catch((err) =>dispatch(changeCommentVoteState({ commentId: commentData.commentId, error: `error-code: ${err}` })))
+    .catch((err) => dispatch(changeCommentVoteState({ commentId: commentData.commentId, error: `error-code: ${err}` })))
 }
 
 
